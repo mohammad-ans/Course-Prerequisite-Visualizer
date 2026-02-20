@@ -1,13 +1,22 @@
-import {useState} from "react"
+import {useState, useEffect} from "react"
 import { Link, useNavigate } from "react-router-dom"
 import "./SignIn.css"
 import api from "./api";
+import useDashAuth from "./useDashAuth";
 
 export default function SignIn(props) {
     const [email, setEmail] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] =  useState("");
+    const {isAdmin} = useDashAuth();
+    const {checking} = useDashAuth();
     const navigate = useNavigate();
+
+    useEffect(()=>{
+        if(!checking && isAdmin) {
+            navigate("/admin")
+        }
+    }, [checking])
     async function sendOtp(e){
         setLoading(true);
         e.preventDefault()
@@ -17,7 +26,7 @@ export default function SignIn(props) {
             })
             if (resp.data.msg == "Success"){
                 props.setEmail(email);
-                navigate("otp");
+                navigate("/otp");
                 setError("");
             }
             else{

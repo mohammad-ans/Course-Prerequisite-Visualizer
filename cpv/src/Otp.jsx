@@ -1,15 +1,20 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
-
 import "./otpform.css"
 import api from "./api";
+import useDashAuth from "./useDashAuth";
+
+
 export default function OTPForm(props) {
-    // const navigate = useNavigate();
-    // const {setTrigger} = useChatAuth();
-    // const {setError} = useChatAuth();
-    // const { setUsername } = useChatAuth();
-    // const { setLogged } = useChatAuth();
+    const {setIsAdmin} = useDashAuth();
+    const {isAdmin} = useDashAuth();
+    const {setUsername} = useDashAuth();
+    const navigate = useNavigate();
+    const [error, setError] = useState("");
     useEffect(()=>{
+        if(isAdmin) {
+            navigate("/admin")
+        }
         document.querySelector(".otp-enter-design").focus()
     }, [])
     async function otpVerification(otp) {
@@ -19,17 +24,14 @@ export default function OTPForm(props) {
                 otp: otp
             })
             if (response.data.msg == "Success") {
-                // setError("Successfuly Logged In");
-                // setLogged(true);
-                // setUsername(response.data.username);
-                // navigate("/chat")
+                setError("Successfuly Logged In");
+                setIsAdmin(true);
+                setUsername(response.data.username);
+                navigate("/admin")
             }
         }
         catch (err) {
             setError("Invalid or expired OTP");
-        }
-        finally {
-            setTrigger(e => !e);
         }
     }
     function otpInput(e) {
@@ -75,9 +77,8 @@ export default function OTPForm(props) {
                             onChange={otpInput} onKeyDown={otpInputBackLogic} />
                     </div>
                 </li>
-                <li>
-                    {/* <button onClick={otpVerification} className="sign-button" disabled={loading}>{loading ? "Verifying..." : "Verify"}</button>
-            <p style = {msg == "Successfully logged in" ? {color : "green"} : {color : "red"}}>{msg}</p> */}
+                <li className="error-msg-otp">
+                    <p style = {error == "Successfully logged in" ? {color : "green"} : {color : "red"}}>{error}</p>
                 </li>
             </ul>
         </div>

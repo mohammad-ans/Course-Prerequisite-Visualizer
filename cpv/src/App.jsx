@@ -6,20 +6,17 @@ import {Link, Routes, Route, useLocation} from 'react-router-dom'
 import Home from './Home'
 import Footer from './Footer'
 import SignIn from './SignIn'
-import { DashboardAuthProvider } from "./useDashAuth.jsx";
-import DeleteCoursePage from './DeleteCourse'
+import { DashboardAuthProvider } from "./useDashAuth.jsx"
 import ListCoursesPage from './ListCoursePage'
 import SearchCoursePage from './SearchCoursePage'
-import UpdateCoursePage from './UpdateCourse'
-import AddCoursePage from './AddCourse'
 import CourseGraph from './Source'
 import OTPForm from './Otp'
 import { gsap } from 'gsap/gsap-core'
-import SuperUser from './SuperUser.jsx'
+import Admin from './Admin.jsx'
 function App() {
     const [email, setEmail] = useState("");
     const loc = useLocation();
-    const hidePaths = ["/a"];
+    const hidePaths = ["/admin", "/admin/addcourse", "/admin/delcourse", "/admin/updatecourse", "/admin/superuser"];
     const hidePathBoolean = hidePaths.includes(loc.pathname);
     function hoverEnter(e) {
       console.log(e.currentTarget.children[0]);
@@ -38,11 +35,12 @@ function App() {
     }
   return (
     <div className='navbar-helper'>
-      <div className="buttons-main">
+      {!hidePathBoolean && <div className="buttons-main">
         <button onMouseEnter={hoverEnter} onMouseLeave={hoverLeave}><span className="line-blue-main"></span><Link to="/">Student</Link></button>
         <button onMouseEnter={hoverEnter} onMouseLeave={hoverLeave}><span className="line-blue-main"></span><Link to="signin">Admin</Link></button>
-      </div>
+      </div>}
   {!hidePathBoolean && <NavBar/>}
+      <DashboardAuthProvider>
     <Routes>
       <Route path="/" element = {<Home/>}/>
       <Route path="/about" element={<About/>}/>
@@ -54,14 +52,12 @@ function App() {
       <Route path="/listCourse" element={<DashboardAuthProvider><ListCoursesPage/></DashboardAuthProvider>}/>
       <Route path="/updateCourse" element={<DashboardAuthProvider><UpdateCoursePage/></DashboardAuthProvider>}/>
       <Route path="/add" element={<DashboardAuthProvider><AddCoursePage/></DashboardAuthProvider>}/> */}
-      <Route path="/admin/addcourse" element={<AddCoursePage/>}/>
-      <Route path="/admin/delCourse" element={<DeleteCoursePage/>}/>
-      <Route path="/admin/updateCourse" element={<UpdateCoursePage/>}/>
-      <Route path="/admin/superUser" element={<SuperUser/>}/>
+      <Route path="/admin/*" element={<Admin/>}/>
       <Route path="/listCourse" element={<ListCoursesPage/>}/>
       <Route path="/search" element={<SearchCoursePage/>}/>
       <Route path="/graph" element={<CourseGraph/>}/>
     </Routes>
+      </DashboardAuthProvider>
     {!hidePathBoolean && <Footer/>}
     </div>
   )

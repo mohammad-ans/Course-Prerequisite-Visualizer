@@ -167,7 +167,20 @@ def add_course(course: schemas.CourseCreate, db: Session = Depends(get_db)):
 @app.get("/users")
 def get_users(db : Session = Depends(get_db)):
     users = db.query(models.Users).all()
-    print(users)
+    return users
+
+@app.delete("/users/{email}")
+def del_users(email : str, db : Session = Depends(get_db)):
+    try:
+        user = db.query(models.Users).where(models.Users.email == email).one_or_none()
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=[{"msg" : "User Not Found"}])
+        db.delete(user)
+        db.commit()
+    except Exception as e:
+        print("Error occured while deleting user")
+        raise HTTPException(status_code=status.WS_1011_INTERNAL_ERROR, detail=[{"msg" : "Could not delete user"}])
+    return {"msg" : f"Successfully deleted user with {email}"}
 
 @app.post("/users")
 def add_user(user : schemas.Add_user,db : Session = Depends(get_db)):

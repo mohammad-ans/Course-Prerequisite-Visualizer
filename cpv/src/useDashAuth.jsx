@@ -5,18 +5,20 @@ export default function useDashAuth(){
     return useContext(DashboardAuth)
 } 
 export function DashboardAuthProvider({children}){
-    const[isAdmin, setIsAdmin] = useState(false);
-    const[checking, setChecking] = useState(true);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [checking, setChecking] = useState(true);
+    const [username, setUsername] = useState("");
     useEffect(()=>{
         async function adminCheck() {
             try{
                 const response = await api.get("/logincheck");
                 if (response.data.msg == "Success") {
                     setIsAdmin(true);
+                    setUsername(response.data.username)
                 }
             }
             catch(e){
-                setIsAdmin(false);
+                setIsAdmin(true);
             }
             finally{
                 setChecking(false);
@@ -25,7 +27,7 @@ export function DashboardAuthProvider({children}){
         adminCheck();
     }, [])
     return(
-        <DashboardAuth.Provider value={{isAdmin, checking}}>
+        <DashboardAuth.Provider value={{isAdmin, setIsAdmin, checking, username, setUsername}}>
             {children}
         </DashboardAuth.Provider>
     )   

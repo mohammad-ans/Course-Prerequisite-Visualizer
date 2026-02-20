@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import api from './api';
+import { useEffect, useState } from 'react'
 import "./AddCourse.css"
+import api from '../api'
 
 function AddCoursePage() {
   const [code, setCode] = useState("");
@@ -65,6 +65,9 @@ function AddCoursePage() {
 
   return (
     <div className="course-page">
+      <h2 className="dashboard-headings">
+        Add New Course
+      </h2>
     <form onSubmit={handleSubmit} className="add-course-main">
       <input
         type="text"

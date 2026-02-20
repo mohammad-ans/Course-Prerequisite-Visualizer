@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import api from './api';
+import api from '../api';
 import "./AddCourse.css"
 
 function DeleteCoursePage() {
   const [code, setCode] = useState("");
 
-  const handleDelete = async (e) => {
+  async function handleDelete(){
     e.preventDefault();
     try {
       const response = await api.delete(`/courses/${code}`);
@@ -25,6 +25,9 @@ function DeleteCoursePage() {
 
   return (
     <div className="course-page">
+      <h2 className="dashboard-headings">
+        Delete Course
+      </h2>
     <form onSubmit={handleDelete} className="add-course-main">
       <input
         type="text"

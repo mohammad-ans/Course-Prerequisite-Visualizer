@@ -1,0 +1,151 @@
+.add-course-main{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 100px;
+    margin-bottom: 30px;
+    gap: 9px;
+}
+
+.add-course-main input{
+    height: 3rem;
+    padding: 4px 8px;
+    background-color: rgb(230, 230, 230);
+    border: 4px solid rgb(230, 230, 230);
+    border-radius: 3px;
+    width: 60vw;
+}
+.add-course-main input:focus{
+    outline: none;
+    border: 3px solid #186aff;
+}
+.add-course-main select{
+    padding: 4px 8px;
+    height: 2rem;
+    border-radius: 3px;
+    border: none;
+    width: 60vw;
+}
+.add-course-main button{
+    max-width: 150px;
+    padding: 4px 8px;
+    height: 2.2rem;
+    cursor: pointer;
+    color: white;
+    background-color: #186aff;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+}
+.add-course-main button:hover{
+    opacity: 0.7;
+}
+.selected-prereqs{
+    margin-left: 20px;
+}
+.selected-prereqs #prereqs-list{
+    margin: 10px 70px 0px 20px;
+    list-style: disc;
+}
+.removeCourse{
+    font-size: 2.5rem;
+    color: rgb(255, 65, 65);
+    cursor: pointer;
+    position: relative;
+    left: 70px;
+    bottom: -0.4rem;
+}
+.course-error{
+    text-align: center;
+    margin: auto;
+    width: 200px;
+    color: red;
+}
+.course-page{
+    margin-bottom: 70px;
+}
+.update-name{
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.update-name div{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.update-name div input{
+    height: auto;
+    width: auto;
+}
+.users{
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.user{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(230, 230, 230);
+    border-radius: 4px;
+    margin: 0px 20px;
+    padding: 14px 10px;
+}
+.remove-user{
+    position: absolute;
+    font-size: 2.5rem;
+    font-weight: 200;
+    color: red;
+    right: 30px;
+    top: 0.8rem;
+    cursor: pointer;
+}
+.admin-area{
+    background-color: white;
+    min-height: 100vh;
+    min-width: 100vw;
+    color: black;
+}
+.dashboard-headings{
+    font-size: 2rem;
+    text-align: center;
+    padding-top: 100px;
+}
+.confirmation{
+    position: absolute;
+    background-color: rgb(230, 230, 230);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 15px 20px;
+    border-radius: 6px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+.confirmation button{
+    cursor: pointer;
+    color: white;
+    background-color: #186aff;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    padding: 4px 8px;
+}
+.confirmation div{
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+}
+.dashboard-overlay{
+    position: absolute;
+    z-index: 1;
+    background-color: black;
+    height: 100vh;
+    width: 100vw;
+    opacity: 50%;
+}

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import api from './api';
+import api from '../api';
 
 export default function UpdateCoursePage() {
   const [code, setCode] = useState("");
@@ -100,6 +100,9 @@ export default function UpdateCoursePage() {
   }
   return (
     <div className="course-page">
+      <h2 className="dashboard-headings">
+        Update Course
+      </h2>
     <form onSubmit={handleUpdate} className="add-course-main">
 
       <input type="text" placeholder="Existing course code" value={code} onChange={selectAndCodeChangeHandler}/>
@@ -114,7 +117,7 @@ export default function UpdateCoursePage() {
         type="text"
         placeholder="New course title"
         value={title}
-        onChange={e => setTitle(e.target.value)}
+        onChange={e => setTitle(e.currentTarget.value)}
         disabled={!nameOption}
       />
       <div>
