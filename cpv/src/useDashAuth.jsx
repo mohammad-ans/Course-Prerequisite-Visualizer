@@ -13,7 +13,7 @@ export function DashboardAuthProvider({children}){
             try{
                 const response = await api.get("/logincheck");
                 if (response.data.msg == "Success") {
-                    setIsAdmin(true);
+                    setIsAdmin(response.data.type);
                     setUsername(response.data.username)
                 }
             }
@@ -27,7 +27,7 @@ export function DashboardAuthProvider({children}){
         adminCheck();
     }, [])
     return(
-        <DashboardAuth.Provider value={{isAdmin, setIsAdmin, checking, username, setUsername}}>
+        <DashboardAuth.Provider value={{isAdmin, setIsAdmin, setChecking, checking, username, setUsername}}>
             {children}
         </DashboardAuth.Provider>
     )   

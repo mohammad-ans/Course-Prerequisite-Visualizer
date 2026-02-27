@@ -225,12 +225,12 @@ def get_graph(db : Session = Depends(get_db)):
 
 @app.post("/signin") 
 async def signin(data : Email_signin, db : Session = Depends(get_db)):
-    random_otp = str(random.randint(10, 99)) + chr(65 + random.randint(0, 26)) + str(random.randint(10, 99)) + chr(65 + random.randint(0, 26))
     # user = db.query(Users).filter_by(email = data.email).first()
     user = db.execute(select(Users).where(Users.email == data.email)).scalar_one_or_none()
     if not user:
         raise HTTPException(status_code=404, detail=[{"msg":"User Not Found"}])
     # already_exists = db.query(OTP_entry).filter_by(email = data.email).update({"otp":random_otp})
+    random_otp = str(random.randint(10, 99)) + chr(65 + random.randint(0, 26)) + str(random.randint(10, 99)) + chr(65 + random.randint(0, 26))
     already_exists = db.execute(select(OTP_entry).where(OTP_entry.email == data.email)).scalar_one_or_none()
     try:
         email_response = await send_otp(data.email, random_otp)
@@ -262,11 +262,12 @@ async def verify(verification_data : OTP_verification, response: Response, db : 
     
     # user = db.query(Users).filter_by(email = verification_data.email).first()
     user = db.execute(select(Users).where(Users.email == verification_data.email)).scalar_one()
-    payload = {"username" : user.username, "type" : "Permanent", "exp" : int(time.time()) + 1800}
     # admin_check = db.query(Admins).filter(email=verification_data.email).first()
     admin_check = db.execute(select(Admins).where(Admins.email == verification_data.email)).scalar_one_or_none()
+    type_ = "Permanent"
     if admin_check:
-        payload = {"username" : user.username, "type" : "admin", "exp" : int(time.time()) + 1800}
+        type_="admin"
+    payload = {"username" : user.username, "type" : type_, "exp" : int(time.time()) + 1800}
     token = await create_session_token(payload)
     response.set_cookie(
         key="session_token",
@@ -280,13 +281,14 @@ async def verify(verification_data : OTP_verification, response: Response, db : 
         )
     db.delete(otp_entry)
     db.commit()
-    return {"msg":"Success", "username" : user.username}
+    return {"msg":"Success", "username" : user.username, "type" : type_}
 
 
 
 @app.get("/logincheck")
 async def logincheck(message = Depends(verify_session_token), db : Session = Depends(get_db)):
     username = message["username"]
+    type_ = message["type"]
     return {
         "msg" : "Success",
         "username" : username

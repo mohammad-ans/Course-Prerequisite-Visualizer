@@ -25,7 +25,7 @@ export default function OTPForm(props) {
             })
             if (response.data.msg == "Success") {
                 setError("Successfuly Logged In");
-                setIsAdmin(true);
+                setIsAdmin(response.data.type);
                 setUsername(response.data.username);
                 navigate("/admin")
             }

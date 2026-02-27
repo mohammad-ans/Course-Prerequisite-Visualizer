@@ -12,7 +12,6 @@ export default function SuperUser() {
         try {
             const response = await api.get("/users")
             setUsers(response.data)
-            console.log(response.data)
         }
         catch (error) {
             console.error(error)
@@ -21,7 +20,14 @@ export default function SuperUser() {
     useEffect(() => {
         getUsers();
     }, [])
+    useEffect(()=>{
+        const element = document.querySelector(".dashboard-overlay");
+        if(confirming)
+            element.style.display="block"
+        else
+            element.style.display="none"
 
+    }, [confirming])
     async function handleSubmit(e) {
         e.preventDefault()
         if (users.find((element) => element.email == email)) {
@@ -31,7 +37,6 @@ export default function SuperUser() {
         setError("")
         try {
             const response = await api.post("/users", { "email": email, "username": username })
-            console.log(response.data)
             setEmail("")
             setUsername("")
             getUsers()
@@ -66,20 +71,6 @@ export default function SuperUser() {
     }
     return (
         <div className="course-page">
-            {confirming && <div className="dashboard-overlay">
-            </div>}
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-     xmlns="http://www.w3.org/2000/svg">
-  <path d="M4 10.5L10.8 4.8C11.5 4.2 12.5 4.2 13.2 4.8L20 10.5
-           V19C20 20.1 19.1 21 18 21H14
-           V15.5C14 14.7 13.3 14 12 14
-           C10.7 14 10 14.7 10 15.5V21H6
-           C4.9 21 4 20.1 4 19V10.5Z"
-           stroke-width="2"
-        stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"/>
-</svg>
                 <h2 className="dashboard-headings">
                     Manage Users
                 </h2>

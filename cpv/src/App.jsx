@@ -17,7 +17,7 @@ function App() {
     const [email, setEmail] = useState("");
     const loc = useLocation();
     const hidePaths = ["/admin", "/admin/addcourse", "/admin/delcourse", "/admin/updatecourse", "/admin/superuser"];
-    const hidePathBoolean = hidePaths.includes(loc.pathname);
+    const hidePathBoolean = hidePaths.includes(loc.pathname.toLowerCase());
     function hoverEnter(e) {
       console.log(e.currentTarget.children[0]);
         gsap.to(e.currentTarget.children[0], {

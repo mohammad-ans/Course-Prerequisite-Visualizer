@@ -1,0 +1,26 @@
+import { useEffect, useState } from "react"
+import useDashAuth from "../useDashAuth"
+import "./AddCourse.css"
+import DashboardBox from "./DashboardBox"
+
+export default function Main(){
+    const [data, setData] = useState(["Add Course", "Delete Course", "Update Course"]);
+    const [links, setLinks] = useState(["/admin/addcourse", "/admin/delcourse", "/admin/updatecourse"]);
+    const {isAdmin, checking, setChecking} = useDashAuth();
+    useEffect(()=>{
+        if(!checking) {
+            if(isAdmin == "admin"){
+                setLinks(pre=> [...pre, "/admin/superuser"]);
+                setData(pre=>[...pre, "Manage Users"])
+            }
+        }
+    }, [checking, isAdmin])
+    return(
+        <div>
+            <h1 className="dashboard-main-heading">Welcome to Admin Dashboard</h1>
+            <div className="dashboard-boxes">
+                {data.map((element, index)=><DashboardBox name={element} key={element} link={links[index]}/>)}
+             </div>
+        </div>
+    )
+}
