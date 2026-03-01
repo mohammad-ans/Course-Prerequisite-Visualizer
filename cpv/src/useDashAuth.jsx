@@ -7,7 +7,7 @@ export default function useDashAuth(){
 export function DashboardAuthProvider({children}){
     const [isAdmin, setIsAdmin] = useState(false);
     const [checking, setChecking] = useState(true);
-    const [username, setUsername] = useState("");
+    const [username, setUsername] = useState("Username");
     useEffect(()=>{
         async function adminCheck() {
             try{

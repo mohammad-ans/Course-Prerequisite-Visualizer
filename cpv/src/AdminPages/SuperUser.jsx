@@ -1,13 +1,23 @@
 import { useEffect, useRef, useState } from "react"
 import api from "../api";
 import "./AddCourse.css"
+import useDashAuth from "../useDashAuth";
+import { useNavigate } from "react-router-dom";
 export default function SuperUser() {
     const [users, setUsers] = useState([]);
-    const [email, setEmail] = useState("")
-    const [username, setUsername] = useState("")
-    const [error, setError] = useState("")
-    const [confirming, setConfirming] = useState(false)
-    const tempEmail= useRef("")
+    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
+    const [error, setError] = useState("");
+    const [confirming, setConfirming] = useState(false);
+    const navigate = useNavigate();
+    const tempEmail= useRef("");
+    const {checking, isAdmin} = useDashAuth();
+
+    // useEffect(()=>{
+    //     if(!checking)
+    //         if(isAdmin != "admin")
+    //             navigate("/signin");
+    // }, [checking])
     async function getUsers() {
         try {
             const response = await api.get("/users")
@@ -42,7 +52,17 @@ export default function SuperUser() {
             getUsers()
         }
         catch (error) {
-            console.error(error)
+            if(error.response.data && error.response.data.detail) {
+                setError(error.response.data.detail[0].msg);
+                if(error.response.data.detail[0].msg){
+                    alert("Log In again. Your session has expired.")
+                    navigate("/signin", replace)
+                }
+            }
+            else{
+                setError("Error updating the course")
+            }
+
         }
     }
     function emailChangeHandler(e) {
@@ -59,7 +79,16 @@ export default function SuperUser() {
             const response = await api.delete(`/users/${tempEmail.current}`);
         }
         catch (e) {
-            setError("Error occured while deleting user")
+            if(error.response.data && error.response.data.detail) {
+                setError(error.response.data.detail[0].msg);
+                if(error.response.data.detail[0].msg){
+                    alert("Log In again. Your session has expired.")
+                    navigate("/signin", replace)
+                }
+            }
+            else{
+                setError("Error updating the course")
+            }
             return
         }
         setUsers(pre => pre.filter((element) => element.email != tempEmail.current));

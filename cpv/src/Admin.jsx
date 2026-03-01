@@ -8,8 +8,9 @@ import SuperUser from "./AdminPages/SuperUser";
 import "./AdminPages/AddCourse.css"
 import img from "./assets/default_img.png"
 import Main from "./AdminPages/Main";
+import api from "./api";
 export default function Admin() {
-    const { isAdmin, checking } = useDashAuth();
+    const { isAdmin, checking, username } = useDashAuth();
     const navigate = useNavigate();
     useEffect(() => {
 
@@ -17,11 +18,24 @@ export default function Admin() {
             if (!isAdmin)
                 navigate("/signin", replace)
     }, [checking])
+
+    async function logout() {
+        try{
+            const response = await api.get("/logout");
+        }
+        catch(e){
+            alert("Log In again. You are logged out.")
+            navigate("/signin", replace)
+        }
+    }
     return (
         <div className="admin-area">
             <div className="dashboard-overlay">
             </div>
             <div className="dashboard-options">
+                <button className="logout-button" onClick={logout}>Log out</button>
+                
+            <div className="dashboard-options-right">
                 <Link to="/admin"><svg viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 10.5L10.8 4.8C11.5 4.2 12.5 4.2 13.2 4.8L20 10.5
@@ -36,7 +50,8 @@ export default function Admin() {
                 </svg>
                 </Link>
                 <img src={img} alt="ProfileIcon" />
-                <div className="profile-hover"></div>
+                <div className="profile-hover">{username}</div>
+            </div>
             </div>
             <Routes>
                 <Route path="/" element={<Main/>}/>

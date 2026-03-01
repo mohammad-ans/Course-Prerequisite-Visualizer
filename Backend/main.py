@@ -291,5 +291,11 @@ async def logincheck(message = Depends(verify_session_token), db : Session = Dep
     type_ = message["type"]
     return {
         "msg" : "Success",
-        "username" : username
+        "username" : username,
+        "type" : type_
     }
+
+@app.get("/logout")
+async def logout(response : Response, message = Depends(verify_session_token)):
+    response.delete_cookie(key="session_token")
+    return {"msg" : "Success"}

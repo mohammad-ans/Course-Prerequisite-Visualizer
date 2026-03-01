@@ -8,7 +8,7 @@ function AddCoursePage() {
   const [orignalCourses, setOriginals] = useState([]);
   const [availablePreReqs, setAvailablePreReqs] = useState([]);
   const [courses, setCourses] = useState([]);
-  
+  const [error, setError] = useState("")
   useEffect(()=>{
     async function func(){
       try{
@@ -18,6 +18,7 @@ function AddCoursePage() {
         setAvailablePreReqs(arr);
       }
       catch(e){
+        setError("Error occured while fetching courses");
         console.error(e);
       }
     }
@@ -52,14 +53,19 @@ function AddCoursePage() {
       setTitle("");
       setCourses([]);
       setAvailablePreReqs(arr);
-      document.querySelector(".courseAdd-error").innerHTML = "";
+      setError("");
     }
     catch (error) {
-      const element = document.querySelector(".courseAdd-error");
-      if(error.response.data.detail)
-        element.innerHTML = error.response.data.detail[0].msg;
-      else
-        element.innerHTML = "An error occured while sending your request";
+      if(error.response.data && error.response.data.detail) {
+        setError(error.response.data.detail[0].msg);
+          if(error.response.data.detail[0].msg){
+              alert("Log In again. Your session has expired.")
+              navigate("/signin", replace)
+          }
+      }
+      else {
+        setError("An error occured while sending your request");
+      }
     }
   };
 
@@ -92,7 +98,7 @@ function AddCoursePage() {
       </select>
       <button type="submit">Add Course</button>
     </form>
-    <div className="course-error courseAdd-error"></div>
+    <div className="course-error courseAdd-error">{error}</div>
     <div className="selected-prereqs">
     <h2>Pre-Requisites: </h2>
     <ul id="prereqs-list">

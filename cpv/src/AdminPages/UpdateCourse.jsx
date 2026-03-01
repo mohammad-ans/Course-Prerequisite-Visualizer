@@ -65,7 +65,18 @@ export default function UpdateCoursePage() {
       setAvailablePreReqs([]);
       setpreReqs([]);
     } catch (error) {
-      setError("Error updating the course")
+
+      if(error.response.data && error.response.data.detail) {
+        setError(error.response.data.detail[0].msg);
+          if(error.response.data.detail[0].msg){
+              alert("Log In again. Your session has expired.")
+              navigate("/signin", replace)
+          }
+      }
+      else{
+        setError("Error updating the course")
+      }
+      
     }
   };
   function selectAndCodeChangeHandler(e){

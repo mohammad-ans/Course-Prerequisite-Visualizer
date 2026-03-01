@@ -4,21 +4,27 @@ import "./AddCourse.css"
 
 function DeleteCoursePage() {
   const [code, setCode] = useState("");
-
+  const [error, setError] = useState("");
   async function handleDelete(){
     e.preventDefault();
     try {
       const response = await api.delete(`/courses/${code}`);
       console.log('Course deleted:', code);
       setCode("");
-      document.querySelector(".courseDel-error").innerHTML = "";
+      setError("");
     } 
     catch (error) {
       const element = document.querySelector(".courseDel-error");
-      if(error.response.data.detail)
-        element.innerHTML = error.response.data.detail[0].msg;
-      else
-        element.innerHTML = "An error occured while sending your request";
+      if(error.response.data && error.response.data.detail) {
+        setError(error.response.data.detail[0].msg);
+          if(error.response.data.detail[0].msg){
+              alert("Log In again. Your session has expired.")
+              navigate("/signin", replace)
+          }
+      }
+      else {
+        setError("An error occured while sending your request");
+      }
       // setCode("");
     }
   };
@@ -37,7 +43,7 @@ function DeleteCoursePage() {
       />
       <button type="submit">Delete Course</button>
     </form>
-    <div className="course-error courseDel-error"></div>
+    <div className="course-error courseDel-error">{error}</div>
     </div>
   );
 }
