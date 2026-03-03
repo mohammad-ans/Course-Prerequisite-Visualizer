@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import api from '../api';
+import { useNavigate, replace } from "react-router-dom";
 
 export default function UpdateCoursePage() {
   const [code, setCode] = useState("");
@@ -10,6 +11,7 @@ export default function UpdateCoursePage() {
   const [error, setError] = useState("");
   const [availablePreReqs, setAvailablePreReqs] = useState([]);
   const [preReqCourses, setpreReqs] = useState([]);
+  const navigate = useNavigate();
   // const [selectedPreReq, setSelectPr] = useState("")
   useEffect(()=>{
     async function getCourses() {
@@ -66,12 +68,12 @@ export default function UpdateCoursePage() {
       setpreReqs([]);
     } catch (error) {
 
+      if(error.status == 403){
+          alert("Log In again. Your session has expired.")
+          navigate("/signin", replace)
+      }
       if(error.response.data && error.response.data.detail) {
         setError(error.response.data.detail[0].msg);
-          if(error.response.data.detail[0].msg){
-              alert("Log In again. Your session has expired.")
-              navigate("/signin", replace)
-          }
       }
       else{
         setError("Error updating the course")

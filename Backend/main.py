@@ -119,12 +119,13 @@ def update_course(code: str, course: schemas.CourseUpdate, db: Session = Depends
 def delete_course(code: str, db: Session = Depends(get_db)):
     course = db.query(models.Course).where(models.Course.code == code).one_or_none()
     if not course:
-        raise HTTPException(status_code=404, detail=[{"msg": "Course not found"}])
-
-    
-    db.query(models.Prerequisite).where( models.Prerequisite.courseCode == code, models.Prerequisite.prereqCode == code ).delete()
-
-    db.delete(course)
+        raise HTTPException(status_code=404, detail=[{"msg": "Course not found"}])  
+    try:
+        db.query(models.Prerequisite).where( models.Prerequisite.courseCode == code).delete()
+        db.query(models.Prerequisite).where(models.Prerequisite.prereqCode == code).delete()
+        db.delete(course)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "An error occured on the server side while deleting the course. Contact server office."}])
     db.commit()
     return {"detail": "Course deleted"}
 

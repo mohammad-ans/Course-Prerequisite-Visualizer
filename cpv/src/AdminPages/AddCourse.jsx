@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import "./AddCourse.css"
 import api from '../api'
+import { useNavigate, replace } from 'react-router-dom';
 
 function AddCoursePage() {
   const [code, setCode] = useState("");
@@ -8,7 +9,8 @@ function AddCoursePage() {
   const [orignalCourses, setOriginals] = useState([]);
   const [availablePreReqs, setAvailablePreReqs] = useState([]);
   const [courses, setCourses] = useState([]);
-  const [error, setError] = useState("")
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
   useEffect(()=>{
     async function func(){
       try{
@@ -56,12 +58,12 @@ function AddCoursePage() {
       setError("");
     }
     catch (error) {
+      if(error.status == 403){
+          alert("Log In again. Your session has expired.")
+          navigate("/signin", replace)
+      }
       if(error.response.data && error.response.data.detail) {
         setError(error.response.data.detail[0].msg);
-          if(error.response.data.detail[0].msg){
-              alert("Log In again. Your session has expired.")
-              navigate("/signin", replace)
-          }
       }
       else {
         setError("An error occured while sending your request");

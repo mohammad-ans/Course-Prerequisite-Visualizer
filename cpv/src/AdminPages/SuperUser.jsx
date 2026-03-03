@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import api from "../api";
 import "./AddCourse.css"
 import useDashAuth from "../useDashAuth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, replace } from "react-router-dom";
 export default function SuperUser() {
     const [users, setUsers] = useState([]);
     const [email, setEmail] = useState("");
@@ -52,12 +52,12 @@ export default function SuperUser() {
             getUsers()
         }
         catch (error) {
+            if(error.status == 403){
+                alert("Log In again. Your session has expired.")
+                navigate("/signin", replace)
+            }
             if(error.response.data && error.response.data.detail) {
                 setError(error.response.data.detail[0].msg);
-                if(error.response.data.detail[0].msg){
-                    alert("Log In again. Your session has expired.")
-                    navigate("/signin", replace)
-                }
             }
             else{
                 setError("Error updating the course")

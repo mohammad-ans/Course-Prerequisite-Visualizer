@@ -1,31 +1,56 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import api from '../api';
 import "./AddCourse.css"
+import { replace, useNavigate } from "react-router-dom";
 
 function DeleteCoursePage() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
-  async function handleDelete(){
+  const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+  const [trigger, setTrigger] = useState(false);
+  async function getCourses() {
+    try{
+      const response = await api.get("/courses");
+      setCourses(response.data);
+    }
+    catch(error) {
+    if(error.status == 403){
+        alert("Log In again. Your session has expired.")
+        navigate("/signin", replace)
+    }
+    if(error.response.data && error.response.data.detail) {
+      setError(error.response.data.detail[0].msg);
+    }
+    else {
+      setError("An error occured while sending your request");
+    }
+    }
+  }
+  useEffect(()=>{
+    getCourses();
+  }, [trigger])
+  async function handleDelete(e){
     e.preventDefault();
     try {
       const response = await api.delete(`/courses/${code}`);
-      console.log('Course deleted:', code);
-      setCode("");
       setError("");
+      setTrigger(t => !t);
     } 
     catch (error) {
-      const element = document.querySelector(".courseDel-error");
+      if(error.status == 403){
+        alert("Log In again. Your session has expired.");
+        navigate("/signin", replace);
+      }
       if(error.response.data && error.response.data.detail) {
         setError(error.response.data.detail[0].msg);
-          if(error.response.data.detail[0].msg){
-              alert("Log In again. Your session has expired.")
-              navigate("/signin", replace)
-          }
       }
       else {
         setError("An error occured while sending your request");
       }
-      // setCode("");
+    }
+    finally{
+      setCode("");
     }
   };
 
@@ -39,8 +64,12 @@ function DeleteCoursePage() {
         type="text"
         placeholder="Course code to delete"
         value={code}
-        onChange={e => setCode(e.target.value)}
+        onChange={e => setCode(e.currentTarget.value)}
       />
+      <select value={code} onChange={e => setCode(e.currentTarget.value)}>
+        <option value="">Select from the list</option>
+        {courses.map((element)=><option key={element.code} value={element.code}>{`${element.code} - ${element.title}`}</option>)}
+      </select>
       <button type="submit">Delete Course</button>
     </form>
     <div className="course-error courseDel-error">{error}</div>
