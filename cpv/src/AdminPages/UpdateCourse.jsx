@@ -36,13 +36,12 @@ export default function UpdateCoursePage() {
       try{
         const response = await api.get(`/preReqs/${code}`);
         let arr = [];
-        let arr2 = [];
         for(let i = 0; i < courses.length; i++){
           if( (!response.data.some(element=> element.code == courses[i].code)) && courses[i].code != code){
             arr.push(courses[i]);
           }
         }
-        setpreReqs(pre => response.data.map((element)=>`${element.code} - ${element.title}`));
+        setpreReqs(pre => response.data);
         setAvailablePreReqs(pre => arr)
       }
       catch(error) {
@@ -100,16 +99,15 @@ export default function UpdateCoursePage() {
     setOption(pre=>!pre);
   }
   function removeCourse(e) {
-    const temp = e.currentTarget.parentNode.childNodes[0].innerText;
-    setpreReqs(pre=> pre.filter((element)=> element!=temp));
+    const temp = e.currentTarget.parentNode.dataset.value;
+    setpreReqs(pre => pre.filter((element) => element.code != temp));
     const val = temp.split(" - ");
     setAvailablePreReqs([...availablePreReqs, {"code" : val[0], "title" : val[1]}]);
   }
   function changePreReqHandler(e) {
     let temp = e.currentTarget.value;
-    setpreReqs([...preReqCourses, temp]);
-    let val = temp.split(" - ")[0];
-    setAvailablePreReqs(pre => pre.filter((element)=>element.code != val));
+    setpreReqs([...preReqCourses, {code : temp, title : availablePreReqs.find(element => element.code == temp).title}]);
+    setAvailablePreReqs(pre => pre.filter((element) => element.code != temp));
   }
   return (
     <div className="course-page">
@@ -141,7 +139,7 @@ export default function UpdateCoursePage() {
       <div>
         <select className="add-courselist" value="" onChange={changePreReqHandler}>
           <option value="">Select Pre-requisites</option>
-          {availablePreReqs.map((element)=><option value={`${element.code} - ${element.title}`} key={element.code}>{`${element.code} - ${element.title}`}</option>)}
+          {availablePreReqs.map((element)=><option value={element.code} key={element.code}>{`${element.code} - ${element.title}`}</option>)}
         </select>
       </div>
       <button type="submit">Update Course</button>
@@ -150,7 +148,7 @@ export default function UpdateCoursePage() {
       <div className="selected-prereqs">
         <h2>Pre-Requisites: </h2>
         <ul id="prereqs-list">
-          {preReqCourses.map((element)=><li key={element}><span className="courseName">{element}</span><span className="removeCourse" onClick={removeCourse}>-</span></li>)}
+          {preReqCourses.map((element)=><li key={element.code} data-value={element.code}><span className="courseName">{`${element.code} - ${element.title}`}</span><span className="removeCourse" onClick={removeCourse}>-</span></li>)}
         </ul>
       </div>
 

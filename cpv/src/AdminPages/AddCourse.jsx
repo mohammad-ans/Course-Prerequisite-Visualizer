@@ -15,9 +15,9 @@ function AddCoursePage() {
     async function func(){
       try{
         const response = await api.get("/courses");
-        const arr = response.data.map((element) => element.code + " - " + element.title);
-        setOriginals(arr);
-        setAvailablePreReqs(arr);
+        // const arr = response.data.map((element) => element.code + " - " + element.title);
+        setOriginals(response.data);
+        setAvailablePreReqs(response.data);
       }
       catch(e){
         setError("Error occured while fetching courses");
@@ -31,25 +31,23 @@ function AddCoursePage() {
     const temp = e.target.value;
     if(temp === "")
       return;
-    setCourses(p => p.includes(temp)? p : [...courses, temp]);
-    setAvailablePreReqs(p => p.filter((element)=>element!=temp));
+    const tempObj = availablePreReqs.find(element => element.code == temp).title;
+    setCourses(p => [...courses, {code : temp, title : tempObj}]);
+    setAvailablePreReqs(p => p.filter((element) => element.code != temp));
     document.querySelector(".add-courselist").options.selectedIndex = 0;
   }
 
   function removeCourse(e) {
-    const course = e.currentTarget.parentNode.childNodes[0].innerText;
-    if(courses.includes(course)){
-      setCourses(p => p.filter((el)=>el!=course));
-      setAvailablePreReqs([...availablePreReqs, course]);
-    }
+    const course = e.currentTarget.parentNode.dataset.value;
+      setAvailablePreReqs([...availablePreReqs, {code : course, title : courses.find(element => element.code == course).title}]);
+      setCourses(p => p.filter((el)=> el.code != course));
   }
   async function handleSubmit(e){
     e.preventDefault();
     try {
       const response = await api.post("/courses", { code : code.toUpperCase(), title: title.toUpperCase(), preReqs : courses});
       console.log("Course added:", response.data);
-      let arr = [...orignalCourses, code + " - " + title];
-      console.log(arr);
+      let arr = [...orignalCourses, {code : title}];
       setOriginals(arr);
       setCode(""); 
       setTitle("");
@@ -93,7 +91,7 @@ function AddCoursePage() {
       />
       <select className="add-courselist" onChange={coursesHandler} defaultValue="">
         <option value="">Select Pre-requisites</option>
-        {availablePreReqs.map((element) => <option value={element} key={element}>{element}</option>)}
+        {availablePreReqs.map((element) => <option value={element.code} key={element.code}>{`${element.code} - ${element.title}`}</option>)}
         <option value="a - Hi">Hi</option>
         <option value="b - Ci">Ci</option>
         <option value="c - Bi">Bi</option>
@@ -104,7 +102,7 @@ function AddCoursePage() {
     <div className="selected-prereqs">
     <h2>Pre-Requisites: </h2>
     <ul id="prereqs-list">
-      {courses.map((crsname)=> <li key={crsname}><span className="courseName">{crsname}</span><span className="removeCourse" onClick={removeCourse}>-</span></li>)}
+      {courses.map((crsname)=> <li key={crsname.code} data-value={crsname.code}><span className="courseName">{`${crsname.code} - ${crsname.title}` }</span><span className="removeCourse" onClick={removeCourse}>-</span></li>)}
     </ul>
     </div>
     </div>

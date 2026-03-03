@@ -4,12 +4,12 @@ from typing import List
 class CourseCreate(BaseModel):
     code: str
     title: str
-    preReqs : List[str]
+    preReqs : List[dict]
 
 class CourseUpdate(BaseModel):
     code: str
     title: str
-    preReqs : List[str]
+    preReqs : List[dict]
 
 class PrerequisiteCreate(BaseModel):
     courseCode: str

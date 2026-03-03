@@ -102,10 +102,9 @@ def update_course(code: str, course: schemas.CourseUpdate, db: Session = Depends
     try:
         db.query(models.Prerequisite).where(models.Prerequisite.courseCode == code).delete()
         for preReq in course.preReqs:
-            temp = preReq.split(" - ")
             preReq_data_add = models.Prerequisite(
                 courseCode = code,
-                prereqCode = temp[0]
+                prereqCode = preReq["code"]
             )
             db.add(preReq_data_add)
     except Exception as e:
@@ -132,7 +131,6 @@ def delete_course(code: str, db: Session = Depends(get_db)):
 
 @app.post("/courses")
 def add_course(course: schemas.CourseCreate, db: Session = Depends(get_db)):
-
     already_exists = db.query(models.Course).where(models.Course.code == course.code).one_or_none()
     if already_exists:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=[{"msg" : "Course Already Exists"}])
@@ -153,17 +151,16 @@ def add_course(course: schemas.CourseCreate, db: Session = Depends(get_db)):
     
     try:
         for element in course.preReqs:
-            temp = element.split("-")[0].strip(" ")
             preReqAdd = models.Prerequisite(
                 courseCode = course.code,
-                prereqCode = temp
+                prereqCode = element["code"]
             )
             db.add(preReqAdd)
         db.commit()
     except Exception as e:
         print("Error occured while adding preRequisites for the course. Post request at /course")
         print(e)
-    return course
+    return course.code
 
 @app.get("/users")
 def get_users(db : Session = Depends(get_db)):

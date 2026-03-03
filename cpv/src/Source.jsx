@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import CytoscapeComponent from 'react-cytoscapejs';
 import api from "./api";
+import "./Source.css"
 
 export default function CourseGraph() {
   const [elements, setElements] = useState([]);
   const [search, setSearch] = useState('');
   const cyRef = useRef(null); 
-const [selectedNode, setSelectedNode] = useState(null);
+  const [selectedNode, setSelectedNode] = useState(null);
 
 
   useEffect(() => {
