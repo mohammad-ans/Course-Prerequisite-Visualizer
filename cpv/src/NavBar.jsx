@@ -64,13 +64,16 @@ export default function NavBar() {
             setnavOpen(n => !n);
         }
     }
+    function navCloseOnNavigation() {
+        func()
+    }
     return(
         <div className="nav-close nav" >
             <nav className="main-nav">
                 <Link to="/" className="logo"><img src={logo} alt="C"/><span className="logo-span">Cpv.com</span></Link>
                 <ul className="nav-list">
-                    <li onMouseEnter={hoverEnter} onMouseLeave={hoverLeave}><span className="line-blue"></span><Link to="/about">About</Link></li>
-                    <li onMouseEnter={hoverEnter} onMouseLeave={hoverLeave}><span className="line-blue"></span><Link to="/graph">See Prerequisite Graph</Link></li>
+                    <li onMouseEnter={hoverEnter} onMouseLeave={hoverLeave} onClick={navCloseOnNavigation}><span className="line-blue"></span><Link to="/about">About</Link></li>
+                    <li onMouseEnter={hoverEnter} onMouseLeave={hoverLeave} onClick={navCloseOnNavigation}><span className="line-blue"></span><Link to="/graph">See Prerequisite Graph</Link></li>
                 </ul>
                 <div className="nav-buttons">
                     <button className="nav-button-1">Get in Touch</button>
