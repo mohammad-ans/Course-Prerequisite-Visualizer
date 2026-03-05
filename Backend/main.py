@@ -71,6 +71,8 @@ def return_preReqs(code : str, db : Session = Depends(get_db)):
         temp = db.query(models.Prerequisite).where(models.Prerequisite.courseCode == code).all()
     except Exception as e:
         print("Error occured while fetching pre-requisites from the database")
+        print(e)
+        return []
 
     try:
         result = list()
@@ -81,12 +83,41 @@ def return_preReqs(code : str, db : Session = Depends(get_db)):
         print("Error occured while getting pre-requisites full detail")
     return result
 
-@app.get("/courses/{code}")
-def get_course(code: str, db: Session = Depends(get_db)):
-    course = db.query(models.Course).where(models.Course.code == code).first()
-    if not course:
-        raise HTTPException(status_code=404, detail="Course not found")
-    return course
+@app.get("/searchCourses")
+def search_courses(searchQuery : str, searchBy : str, db : Session = Depends(get_db)):
+    if searchBy == "code":
+        courses = db.query(models.Course).where(models.Course.code.ilike(f"%{searchQuery}%") ).all()
+    else:
+        courses = db.query(models.Course).where(models.Course.title.ilike(f"%{searchQuery}%") ).all()
+    return courses[0:6]
+
+@app.get("/courses/{searchQuery}")
+def get_course(searchQuery: str, searchby : str, db: Session = Depends(get_db)):
+    try:
+        if searchby == "code":
+            course = db.query(models.Course).where(models.Course.code == searchQuery.upper()).first()
+        else:
+            course = db.query(models.Course).where(models.Course.title == searchQuery.upper() ).first()
+        if course:
+            follow_ups = []
+            try:
+                follow_ups_names = db.query(models.Prerequisite).where(models.Prerequisite.prereqCode == course.code).all()
+                for element in follow_ups_names:
+                    follow_ups.append(db.query(models.Course).where(models.Course.code == element.courseCode).one())
+            except Exception as E:
+                raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Error occured while fetching course post options"}])
+            prereqs_list = return_preReqs(course.code, db)
+            return {"courseDetails" : course, "preReqs" : prereqs_list, "followUps" : follow_ups}
+        
+        if searchby == "code":
+            suggestedCourses = db.query(models.Course).where(models.Course.code.ilike(f"%{searchQuery}%")).all()
+        else:
+            suggestedCourses = db.query(models.Course).where(models.Course.title.ilike(f"%{searchQuery}%") ).all()
+    except Exception:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Error occured while searching the course. Try Again"}])
+    if not suggestedCourses:
+        return {"msg" : "Not Found"}
+    return {"suggested" : suggestedCourses}
 
 
 @app.put("/courses/{code}")

@@ -1,0 +1,99 @@
+.course-details{
+    padding: 16px;
+    padding-left: 40px;
+    margin-bottom: 100px;
+}
+.search-suggestions > li{
+    border: none;
+    outline: none;
+    padding: 6px;
+    cursor: pointer;
+    color: black;
+    background-color: white;
+}
+.search-suggestions > li:hover{
+    background-color: rgba(196, 196, 196, 1);
+}
+.search-input{
+    box-sizing: border-box;
+    width: calc(65vw - 20px);
+    margin-right: 4px;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 16px;
+    position: relative;
+    top: 1px;
+}
+.search-suggestions{
+    width: calc(65vw - 25px);
+    border: 1px solid black;
+    margin-left: 20px;
+    border-radius: 4px;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 44px;
+}
+.search-input:focus{
+    border: none;   
+}
+.search-form{
+    padding: 6px;
+    display: flex;
+    margin: 20px;
+    justify-content: center;
+    gap: 2px;
+    flex-wrap: wrap;
+    margin-bottom: calc(1rem * 4 + 16px * 4);
+}
+.search-form > button{
+    padding: 6px 16px;
+    background-color: #186aff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.search-form select{
+    padding: 6px 16px;
+    background-color: transparent;
+    color: white;
+    border: 1px solid white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.search-input-box{
+    box-sizing: border-box;
+    padding: 6px 12px;
+    display: flex;
+    background-color: white;
+    align-items: center;
+    gap: 12px;
+    border-radius: 22px;
+    height: 44px;
+    position: relative;
+}
+.search-input-box svg{
+    width: 15px;
+    height: 15px;
+}
+.searched-course > ul{
+    list-style: disc;
+    list-style-position: inside;
+}
+.course-details h2{
+    margin-top: 20px;
+    position: relative;
+    left: -24px;
+    margin-bottom: 4px;
+}
+.searched-suggestions .suggested-course-code{
+
+    text-decoration: underline;
+    display: inline-block;
+    cursor: pointer;
+    margin-right: 8px;
+    color: #186aff;
+    line-height: 24px;
+}
