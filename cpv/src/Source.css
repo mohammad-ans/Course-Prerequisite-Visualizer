@@ -4,7 +4,7 @@
     height: 1000px;
     margin-top: 10px;
 }
-.area{
+.graph-area{
     position: relative;
     min-height: 1000px;
 }
@@ -56,6 +56,7 @@
 }
 .usage-message ul{
     list-style: disc;
+    list-style-position: inside;
     padding: 4px 0px;
 }
 

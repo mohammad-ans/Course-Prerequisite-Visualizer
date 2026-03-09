@@ -182,6 +182,7 @@ def add_course(course: schemas.CourseCreate, db: Session = Depends(get_db)):
     
     try:
         for element in course.preReqs:
+            print(element)
             preReqAdd = models.Prerequisite(
                 courseCode = course.code,
                 prereqCode = element["code"]

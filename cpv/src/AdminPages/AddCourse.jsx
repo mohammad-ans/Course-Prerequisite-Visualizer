@@ -10,6 +10,7 @@ function AddCoursePage() {
   const [availablePreReqs, setAvailablePreReqs] = useState([]);
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState("");
+  const [fetchCourses, setFetch] = useState(false);
   const navigate = useNavigate();
   useEffect(()=>{
     async function func(){
@@ -25,7 +26,7 @@ function AddCoursePage() {
       }
     }
     func();
-  }, [])
+  }, [fetchCourses])
 
   function coursesHandler(e){
     const temp = e.target.value;
@@ -34,7 +35,17 @@ function AddCoursePage() {
     const tempObj = availablePreReqs.find(element => element.code == temp).title;
     setCourses(p => [...courses, {code : temp, title : tempObj}]);
     setAvailablePreReqs(p => p.filter((element) => element.code != temp));
-    document.querySelector(".add-courselist").options.selectedIndex = 0;
+    let element;
+    try{
+      element = e.target;
+    }
+    catch{}
+    finally{
+      if (!element)
+          element = document.querySelector(".add-courselist");
+      element.value = "";
+      element.focus();
+    }
   }
 
   function removeCourse(e) {
@@ -47,12 +58,10 @@ function AddCoursePage() {
     try {
       const response = await api.post("/courses", { code : code.toUpperCase(), title: title.toUpperCase(), preReqs : courses});
       console.log("Course added:", response.data);
-      let arr = [...orignalCourses, {code : title}];
-      setOriginals(arr);
       setCode(""); 
       setTitle("");
       setCourses([]);
-      setAvailablePreReqs(arr);
+      setFetch(pre => !pre);
       setError("");
     }
     catch (error) {

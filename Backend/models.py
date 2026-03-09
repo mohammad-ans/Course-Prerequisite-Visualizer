@@ -13,6 +13,22 @@ class Prerequisite(Base):
     courseCode = Column(String, ForeignKey("courses.code"))
     prereqCode = Column(String, ForeignKey("courses.code"))
 
+class Degree(Base):
+    __tablename__ = "degree"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    dname = Column(String)
+    dtype = Column(String)
+    d_chours = Column(Integer)
+    max_chours = Column(Integer)
+    years = Column(Integer)
+
+class SemesterCourses(Base):
+    __tablename__ =  "degreecourses"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    semNo = Column(Integer)
+    degreeId = Column(Integer, ForeignKey("degree.id"))
+    coursecode = Column(String, ForeignKey("courses.code"))
+
 class Admins(Base):
     __tablename__ = "admins"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)

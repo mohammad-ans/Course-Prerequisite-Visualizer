@@ -62,7 +62,7 @@
     color: red;
 }
 .course-page{
-    margin-bottom: 70px;
+    padding-bottom: 70px;
 }
 .update-name{
     display: flex;
@@ -152,12 +152,13 @@
 }
 .dashboard-options-right{
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-end;
     padding-top: 5px;
     position: relative;
+    gap: 4px;
 }
-.dashboard-options-right svg{
+.dashboard-options svg{
     width: 30px;
     height: 30px;
 }
@@ -193,12 +194,33 @@
     color: black;
 }
 .profile-hover{
-    position: absolute;
+    display: flex;
     min-width: 60px;
     padding: 4px;
-    background-color: rgb(230, 230, 230);
-    top: 38px;
+    gap: 0px;
+    align-items: center;
+    position: relative;
+}
+.profile-hover svg{
+    width: 18px;
+    height: 18px;
+    position: relative;
     right: 2px;
+    cursor: pointer;
+    top: 2px;
+}
+.profile-hover p{
+    background-color: rgb(230, 230, 230);
+    font-weight: 200;
+    padding: 6px 4px;
+    border-radius: 4px;
+    position: absolute;
+    top: 42px;
+    max-width: 100px;
+    overflow: hidden;
+    right: 2px;
+    transition: opacity 0.5s ease;
+
 }
 .dashboard-options{
     display: flex;

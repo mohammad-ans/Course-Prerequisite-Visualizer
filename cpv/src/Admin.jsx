@@ -1,6 +1,6 @@
 import { Routes, Route, useNavigate, replace, Link } from "react-router-dom"
 import AddCoursePage from "./AdminPages/AddCourse"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import useDashAuth from "./useDashAuth"
 import DeleteCoursePage from "./AdminPages/DeleteCourse";
 import UpdateCoursePage from "./AdminPages/UpdateCourse";
@@ -11,6 +11,7 @@ import Main from "./AdminPages/Main";
 import api from "./api";
 export default function Admin() {
     const { isAdmin, checking, username } = useDashAuth();
+    const [hover, setHover] = useState(false);
     const navigate = useNavigate();
     useEffect(() => {
 
@@ -33,9 +34,6 @@ export default function Admin() {
             <div className="dashboard-overlay">
             </div>
             <div className="dashboard-options">
-                <button className="logout-button" onClick={logout}>Log out</button>
-                
-            <div className="dashboard-options-right">
                 <Link to="/admin"><svg viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 10.5L10.8 4.8C11.5 4.2 12.5 4.2 13.2 4.8L20 10.5
@@ -49,8 +47,18 @@ export default function Admin() {
                         strokeLinejoin="round" />
                 </svg>
                 </Link>
-                <img src={img} alt="ProfileIcon" />
-                <div className="profile-hover">{username}</div>
+                
+            <div className="dashboard-options-right">
+                
+                <button className="logout-button" onClick={logout}>Log out</button>
+                <div className="profile-hover">
+                        <img src={img} alt="ProfileIcon" />
+                        <svg onClick={()=>setHover(pre => !pre)} fill="rgb(150, 150, 150)" viewBox="-6.5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+                        <title>dropdown</title>
+                        <path d="M18.813 11.406l-7.906 9.906c-0.75 0.906-1.906 0.906-2.625 0l-7.906-9.906c-0.75-0.938-0.375-1.656 0.781-1.656h16.875c1.188 0 1.531 0.719 0.781 1.656z"></path>
+                        </svg>
+                        {hover && <p>{username}</p>}
+                </div>
             </div>
             </div>
             <Routes>

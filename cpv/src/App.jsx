@@ -38,7 +38,8 @@ function App() {
       {!hidePathBoolean && <div className="buttons-main">
         <button onMouseEnter={hoverEnter} onMouseLeave={hoverLeave}><span className="line-blue-main"></span><Link to="/">Student</Link></button>
         <button onMouseEnter={hoverEnter} onMouseLeave={hoverLeave}><span className="line-blue-main"></span><Link to="signin">Admin</Link></button>
-      </div>}
+      </div>
+       }
   {!hidePathBoolean && <NavBar/>}
       <DashboardAuthProvider>
     <Routes>

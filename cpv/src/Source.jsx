@@ -3,6 +3,7 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import api from "./api";
 import { gsap } from 'gsap/gsap-core';
 import "./Source.css"
+import { over } from 'lodash';
 
 export default function CourseGraph() {
   const [elements, setElements] = useState([]);
@@ -45,6 +46,13 @@ export default function CourseGraph() {
       });
 
   }, []);
+  useEffect(()=>{
+    if(overlayNotes)
+      document.body.style.overflowY = "hidden";
+    else
+      document.body.style.overflowY = "scroll"
+
+  }, [overlayNotes])
   useEffect(() => {
     if (!cyRef.current) return;
 
@@ -72,7 +80,6 @@ export default function CourseGraph() {
     }
   };
 
-  // Cytoscape stylesheet with highlight style
   const stylesheet = [
     {
       selector: 'node',
@@ -112,21 +119,25 @@ export default function CourseGraph() {
     if(zoomAllow)
       gsap.to(".button-circle", {
         x : 22.5,
+        backgroundColor : "#186aff",
         duration : 0.1,
-        ease : 'power2'
+        ease : "power2"
       })
     else
       gsap.to(".button-circle", {
-        x : 0.,
+        x : 0,
+        backgroundColor : "white",
         duration : 0.1,
         ease : "power2"
     })
     
   setZoom(pre => !pre);
   }
+
+
   return (
 
-    <div className='area'>
+    <div className="graph-area">
       {overlayNotes ? <><div className="graph-page-overlay">
       </div>
         <div className="usage-message">
