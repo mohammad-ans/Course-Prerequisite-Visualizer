@@ -24,3 +24,15 @@ class Add_user(BaseModel):
 
 class OTP_verification(Email_signin):
     otp : str
+
+class Degree_Add(BaseModel):
+    dname : str
+    dtype : str
+    d_chours : int
+    max_chours : int
+    years : int
+
+class Course_Associate(BaseModel):
+    semNo : int
+    degreeId : int
+    courseCode : str 

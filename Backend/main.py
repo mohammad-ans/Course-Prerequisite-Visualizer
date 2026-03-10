@@ -159,12 +159,78 @@ def delete_course(code: str, db: Session = Depends(get_db)):
     db.commit()
     return {"detail": "Course deleted"}
 
+@app.get("/degrees")
+def get_degrees(db : Session = Depends(get_db)):
+    try:
+        degreeData = db.query(models.Degree).all()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Error occured while getting degrees"}])
+    return degreeData
+
+@app.post("/degree")
+def add_degree(degree : schemas.Degree_Add, db : Session = Depends(get_db)):
+    degree.dname = degree.dname.upper()
+    already_exists = db.query(models.Degree).where(models.Degree.dname == degree.dname).one_or_none()
+    if already_exists:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "A degree with same name already exists"}])
+    try:
+        degreeAdd = models.Degree(
+            dname = degree.dname,
+            dtype = degree.dtype,
+            d_chours = degree.d_chours,
+            max_chours = degree.max_chours,
+            years = degree.years
+        )
+        db.add(degreeAdd)
+        db.commit()
+        for i in range(degree.years * 2):
+            semesterData = models.Semesters(
+                dId = degreeAdd.id, 
+                semNo = i + 1,
+                currHours = 0
+            )
+            db.add(semesterData)
+        db.commit()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Degree could not be added."}])
+    return {"msg" : "Success"}
+
+@app.post("/semester/courses")
+def associate_courseSem(data : schemas.Course_Associate, db : Session = Depends(get_db)):
+    try:
+        dbData = models.SemesterCourses(
+            data
+        )
+        semData = db.query(models.Semesters).where(models.Semesters.semNo == data.semNo, models.Semesters.dId == data.degreeId).one_or_none()
+        courseHours = db.query(models.Course).where(models.Course.code == data.courseCode).one_or_none()
+        maxHours = db.query(models.Degree).where(models.Degree.id == data.degreeId).one_or_none().max_chours
+        if semData.currHours + courseHours.cHours > maxHours:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "Adding this course exceed max credit hours for the semester"}])
+        semData.currHours += courseHours.cHours
+        db.add(dbData)
+        db.commit()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg": "Course could not be added"}])
+
+@app.get("/degree/{degreeId}")
+def degree_data(degreeId : str, db : Session = Depends(get_db)):
+    return_data = {}
+    try:
+        degreeData = db.query(models.Degree.id == degreeId).one_or_none()
+        return_data = {"dname" : degreeData.dname, "dtype" : degreeData.dtype, "dhours" : degreeData.d_hours, "max_chours" : degreeData.max_chours, "semesters" : degreeData.years * 2}
+        semData = db.query(models.SemesterCourses).where(models.SemesterCourses.degreeId == degreeData.id).all()
+        return_data["semData"] = semData
+        print(return_data)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Could not get degree data"}])
+    return return_data
+
 
 @app.post("/courses")
 def add_course(course: schemas.CourseCreate, db: Session = Depends(get_db)):
     already_exists = db.query(models.Course).where(models.Course.code == course.code).one_or_none()
     if already_exists:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=[{"msg" : "Course Already Exists"}])
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "Course Already Exists"}])
     
     try:
         courseAdd = models.Course(

@@ -6,6 +6,7 @@ class Course(Base):
     __tablename__ = "courses"
     code = Column(String, primary_key=True)
     title = Column(String)
+    cHours = Column(Integer)
 
 class Prerequisite(Base):
     __tablename__ = "prerequisites"
@@ -16,7 +17,7 @@ class Prerequisite(Base):
 class Degree(Base):
     __tablename__ = "degree"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    dname = Column(String)
+    dname = Column(String, unique=True)
     dtype = Column(String)
     d_chours = Column(Integer)
     max_chours = Column(Integer)
@@ -28,6 +29,12 @@ class SemesterCourses(Base):
     semNo = Column(Integer)
     degreeId = Column(Integer, ForeignKey("degree.id"))
     coursecode = Column(String, ForeignKey("courses.code"))
+
+class Semesters(Base):
+    __tablename__ = "semesters"
+    semNo = Column(Integer, primary_key=True)
+    dId = Column(Integer, ForeignKey("degree.id"), primary_key=True )
+    currHours = Column(Integer)
 
 class Admins(Base):
     __tablename__ = "admins"
