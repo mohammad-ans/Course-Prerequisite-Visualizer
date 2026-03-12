@@ -10,6 +10,7 @@ import img from "./assets/default_img.png"
 import Main from "./AdminPages/Main";
 import api from "./api";
 import AddDegree from "./AdminPages/AddDegree";
+import AddCourseDegree from "./AdminPages/AddCourseDegree";
 export default function Admin() {
     const { isAdmin, checking, username } = useDashAuth();
     const [hover, setHover] = useState(false);
@@ -69,6 +70,7 @@ export default function Admin() {
                 <Route path="/updatecourse" element={<UpdateCoursePage />} />
                 <Route path="/superuser" element={<SuperUser />} />
                 <Route path="/degreeadd" element={<AddDegree />} />
+                <Route path="/coursedegree" element={<AddCourseDegree/>}/>
             </Routes>
         </div>
     )

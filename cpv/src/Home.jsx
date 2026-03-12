@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import "./home.css"
 import { gsap } from "gsap/gsap-core";
+import { useGSAP } from "@gsap/react";
 
 export default function Home() {
     const [currentSelection, setSelection] = useState("v");
@@ -36,12 +37,27 @@ export default function Home() {
         else{
             setAnswer("No");
         }
-        // const el2 = e.currentTarget
-        // gsap.to(, {
-        //     rotate : "180deg",
-        //     overwrite : "auto"
-        // })
     }
+    useGSAP(()=>{
+        const timeline = gsap.timeline();
+        timeline.to(".start-animation", {
+            y : 0,
+            duration : 0.8,
+            stagger : 0.7,
+            ease : "sine"
+        })
+        timeline.to(".start-animation2", {
+            transform : "translate3d(0, 0%, 0) scale3d(1, 1, 1)",
+            lineHeight : "4.5rem",
+            duration : 1.2,
+            ease : "power1"
+        })
+        timeline.to(".visibility-hidden", {
+            visibility : "visible",
+            duration: 0.1,
+            ease : "sine.in"
+        })
+    }, [])
     function activeButtonHandler(e, active){
         setSelection(s => active); 
         document.querySelector(".active-button").classList.remove("active-button");
@@ -51,20 +67,20 @@ export default function Home() {
         <>
             <div className="main-text">
                 <div className="first-part">
-                    <div className="plain-part">
-                        WHERE
+                    <div className="plain-part start-animation2">
+                        <p className="start-animation">WHERE</p>
                     </div>
-                    <div className="plain-part">
-                        YOUR PATHS
+                    <div className="plain-part start-animation2">
+                        <p className="start-animation">YOUR PATHS</p>
                     </div>
-                    <div className="blue-part">
-                        BECOME CLEAR
+                    <div className="blue-part start-animation2">
+                        <p className="start-animation">BECOME CLEAR</p>
                     </div>
                 </div>
-                <div className="second-part">
+                <div className="second-part visibility-hidden">
                     <div>Everything is built and designed</div> <div>to help students so that they can understand their </div> <div>degree structure by eliminating prerequisite confusion</div> <div> and thus achieve their goals.</div>
                 </div>
-                <div className="nav-button-2">Search Courses</div>
+                <div className="nav-button-2 visibility-hidden">Search Courses</div>
             </div>
             <div className="benefit-text-container">
                 <div className="green-buttons">

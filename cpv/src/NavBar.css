@@ -66,14 +66,14 @@
 .nav-button-1{
     background-color: transparent;
     border: 1px solid white;
-    padding: 11px 16px;
+    padding: 14px 16px;
     border-radius: 6px;
 }
 .nav-button-1:hover{
     background-color: rgb(110, 110, 110);
 }
 .nav-button-2{
-    padding: 11px 16px;
+    padding: 14px 16px;
     background-color: #186aff;
     border: none;
     border-radius: 6px;

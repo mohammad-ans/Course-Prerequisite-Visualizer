@@ -5,11 +5,20 @@ class CourseCreate(BaseModel):
     code: str
     title: str
     preReqs : List[dict]
+    cHours : int
+
+class CourseReturn(BaseModel):
+    code : str
+    title : str 
+
+class Message(BaseModel):
+    msg : str
 
 class CourseUpdate(BaseModel):
     code: str
     title: str
     preReqs : List[dict]
+    cHours : int
 
 class PrerequisiteCreate(BaseModel):
     courseCode: str
@@ -28,11 +37,12 @@ class OTP_verification(Email_signin):
 class Degree_Add(BaseModel):
     dname : str
     dtype : str
-    d_chours : int
+    d_maxchours : int
     max_chours : int
     years : int
 
 class Course_Associate(BaseModel):
     semNo : int
     degreeId : int
-    courseCode : str 
+    courseCode : str
+    courseHours : int

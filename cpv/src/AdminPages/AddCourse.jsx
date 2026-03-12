@@ -5,8 +5,8 @@ import { useNavigate, replace } from 'react-router-dom';
 
 function AddCoursePage() {
   const [code, setCode] = useState("");
+  const [cHours, setHours] = useState("");
   const [title, setTitle] = useState("");
-  const [orignalCourses, setOriginals] = useState([]);
   const [availablePreReqs, setAvailablePreReqs] = useState([]);
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState("");
@@ -17,7 +17,6 @@ function AddCoursePage() {
       try{
         const response = await api.get("/courses");
         // const arr = response.data.map((element) => element.code + " - " + element.title);
-        setOriginals(response.data);
         setAvailablePreReqs(response.data);
       }
       catch(e){
@@ -56,7 +55,7 @@ function AddCoursePage() {
   async function handleSubmit(e){
     e.preventDefault();
     try {
-      const response = await api.post("/courses", { code : code.toUpperCase(), title: title.toUpperCase(), preReqs : courses});
+      const response = await api.post("/courses", { code : code.toUpperCase(), title: title.toUpperCase(), preReqs : courses, cHours : cHours});
       console.log("Course added:", response.data);
       setCode(""); 
       setTitle("");
@@ -98,6 +97,7 @@ function AddCoursePage() {
         required
         onChange={e => setTitle(e.target.value)}
       />
+      <input type="number" value={cHours} onChange={(e)=>setHours(e.target.value)} required/>
       <select className="add-courselist" onChange={coursesHandler} defaultValue="">
         <option value="">Select Pre-requisites</option>
         {availablePreReqs.map((element) => <option value={element.code} key={element.code}>{`${element.code} - ${element.title}`}</option>)}

@@ -24,7 +24,7 @@ export default function AddDegree() {
             const response = await api.post("/degree", {
                 "dname" : dname,
                 "dtype" : dtype,
-                "d_chours" : dHours,
+                "d_maxchours" : dHours,
                 "max_chours" : maxHours,
                 "years" : years
             })

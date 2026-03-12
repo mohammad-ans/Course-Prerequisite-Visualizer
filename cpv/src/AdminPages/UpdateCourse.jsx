@@ -11,13 +11,15 @@ export default function UpdateCoursePage() {
   const [error, setError] = useState("");
   const [availablePreReqs, setAvailablePreReqs] = useState([]);
   const [preReqCourses, setpreReqs] = useState([]);
+  const [cHours, setHours] = useState("");
+  const [hoursOption, setHoursOpt] = useState(false);
+  const [getData, setGetdata] = useState(false);
   const navigate = useNavigate();
   // const [selectedPreReq, setSelectPr] = useState("")
   useEffect(()=>{
     async function getCourses() {
       try{
-        const response = await api.get("courses");
-        // console.log(response.data[0])
+        const response = await api.get("/courses/full");
         setCourses(response.data);
         setError("");
       }
@@ -27,7 +29,7 @@ export default function UpdateCoursePage() {
     }
     getCourses();
 
-  }, [])
+  }, [getData])
   useEffect(()=>{
     
     async function getPreReqs() {
@@ -59,12 +61,14 @@ export default function UpdateCoursePage() {
     }
     setError("")
     try {
-      const response = await api.put(`/courses/${code}`, {"code" : code, "title" : title, "preReqs" : preReqCourses});
+      const response = await api.put(`/courses/${code}`, {"code" : code, "title" : title, "preReqs" : preReqCourses, cHours : cHours});
       console.log('Course updated:', response.data);
       setCode("");
       setTitle("");
+      setHours("");
       setAvailablePreReqs([]);
       setpreReqs([]);
+      setGetdata(pre => !pre);
     } catch (error) {
 
       if(error.status == 403){
@@ -77,7 +81,6 @@ export default function UpdateCoursePage() {
       else{
         setError("Error updating the course")
       }
-      
     }
   };
   function selectAndCodeChangeHandler(e){
@@ -85,18 +88,46 @@ export default function UpdateCoursePage() {
     setCode(val);
     if(!nameOption){
       const temp = courses.filter((element)=>element.code==val);
-      if(temp.length >= 1)
+      if(temp.length >= 1){
         setTitle(temp[0].title);
+        setHours(temp[0].cHours);
+        return;
+      }
+      setTitle("");
+      setHours("");
     }
   }
   function optionChangeHandler(e) {
     if(nameOption && selectElement.current){
       const val = selectElement.current.value;
+      if(val == "") {
+        setTitle("");
+      }
+    else{
       const temp = courses.filter((element)=>element.code == val);
       if(temp.length >= 1)
         setTitle(temp[0].title);
+      else
+        setTitle("");
+    }
     }
     setOption(pre=>!pre);
+  }
+  function choursOption(e) {
+    if(hoursOption && selectElement.current) {
+      const val = selectElement.current.value;
+      if(val == "")
+        setHours("");
+      else{
+        const temp = courses.filter((element) => element.code == val);
+        if(temp.length >= 1)
+          setHours(temp[0].cHours);
+        else
+          setHours("");
+      }
+    }
+    console.log(hoursOption);
+    setHoursOpt(pre => !pre);
   }
   function removeCourse(e) {
     const temp = e.currentTarget.parentNode.dataset.value;
@@ -134,6 +165,11 @@ export default function UpdateCoursePage() {
       <div>
         <input type="checkbox" value={nameOption} onChange={optionChangeHandler}/>
         <span>Update Course Name</span>
+        </div>
+        <input type="number" placeholder="New Credit Hours" value={cHours} disabled={!hoursOption} onChange={(e)=> setHours(e.target.value)}/>
+        <div>
+          <input type="checkbox" value={hoursOption} onChange={choursOption}/>
+          <span>Update Credit Hours</span>
         </div>
       </div>
       <div>

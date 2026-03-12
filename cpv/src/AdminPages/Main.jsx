@@ -4,8 +4,8 @@ import "./AddCourse.css"
 import DashboardBox from "./DashboardBox"
 
 export default function Main(){
-    const [data, setData] = useState(["Add Course", "Delete Course", "Update Course", "Add Degree", "See Pre-requisite Graph"]);
-    const [links, setLinks] = useState(["addcourse", "delcourse", "updatecourse","degreeadd", "/graph"]);
+    const [data, setData] = useState(["Add Course", "Delete Course", "Update Course", "Add Degree", "Add Course to Degree", "See Pre-requisite Graph"]);
+    const [links, setLinks] = useState(["addcourse", "delcourse", "updatecourse","degreeadd", "coursedegree", "/graph"]);
     const {isAdmin, checking, setChecking} = useDashAuth();
     useEffect(()=>{
         if(!checking) {

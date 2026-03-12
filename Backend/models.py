@@ -19,6 +19,7 @@ class Degree(Base):
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     dname = Column(String, unique=True)
     dtype = Column(String)
+    d_maxchours = Column(Integer)
     d_chours = Column(Integer)
     max_chours = Column(Integer)
     years = Column(Integer)

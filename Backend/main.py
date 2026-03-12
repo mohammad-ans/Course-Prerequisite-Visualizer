@@ -10,12 +10,10 @@ from database import SessionLocal, engine
 import models, schemas
 from models import Users, OTP_entry, Admins
 from schemas import  OTP_verification, Email_signin
-from pydantic import BaseModel
-from typing import List
 from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Annotated
+from typing import Annotated, Union, List
 load_dotenv()
 
 origins = [
@@ -61,11 +59,15 @@ async def verify_session_token(session_token: Annotated[str | None, Cookie()] = 
 
 
 
-@app.get("/courses")
+@app.get("/courses", response_model=List[schemas.CourseReturn])
 def list_courses(db: Session = Depends(get_db)):
     return db.query(models.Course).all()
 
-@app.get("/preReqs/{code}")
+@app.get("/courses/full")
+def list_full_courses(db : Session = Depends(get_db)):
+    return db.query(models.Course).all()
+
+@app.get("/preReqs/{code}", response_model=List[schemas.CourseReturn])
 def return_preReqs(code : str, db : Session = Depends(get_db)):
     try:
         temp = db.query(models.Prerequisite).where(models.Prerequisite.courseCode == code).all()
@@ -129,7 +131,7 @@ def update_course(code: str, course: schemas.CourseUpdate, db: Session = Depends
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=[{"msg" : "Wrong course code"}])
     
     db_data.title = course.title
-
+    db_data.cHours = course.cHours
     try:
         db.query(models.Prerequisite).where(models.Prerequisite.courseCode == code).delete()
         for preReq in course.preReqs:
@@ -167,6 +169,14 @@ def get_degrees(db : Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Error occured while getting degrees"}])
     return degreeData
 
+@app.get("/tdegrees/{dtype}")
+def get_tdegrees(dtype : str, db : Session = Depends(get_db)):
+    try:
+        degreeData = db.query(models.Degree).where(models.Degree.dtype == dtype).all()
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Error occured while getting degrees"}])
+    return degreeData
+
 @app.post("/degree")
 def add_degree(degree : schemas.Degree_Add, db : Session = Depends(get_db)):
     degree.dname = degree.dname.upper()
@@ -177,7 +187,8 @@ def add_degree(degree : schemas.Degree_Add, db : Session = Depends(get_db)):
         degreeAdd = models.Degree(
             dname = degree.dname,
             dtype = degree.dtype,
-            d_chours = degree.d_chours,
+            d_maxchours = degree.d_maxchours,
+            d_chours = 0,
             max_chours = degree.max_chours,
             years = degree.years
         )
@@ -198,19 +209,45 @@ def add_degree(degree : schemas.Degree_Add, db : Session = Depends(get_db)):
 @app.post("/semester/courses")
 def associate_courseSem(data : schemas.Course_Associate, db : Session = Depends(get_db)):
     try:
-        dbData = models.SemesterCourses(
-            data
-        )
+        
         semData = db.query(models.Semesters).where(models.Semesters.semNo == data.semNo, models.Semesters.dId == data.degreeId).one_or_none()
-        courseHours = db.query(models.Course).where(models.Course.code == data.courseCode).one_or_none()
-        maxHours = db.query(models.Degree).where(models.Degree.id == data.degreeId).one_or_none().max_chours
-        if semData.currHours + courseHours.cHours > maxHours:
+        degreeData = db.query(models.Degree).where(models.Degree.id == data.degreeId).one_or_none()
+
+        if semData.currHours + data.courseHours > degreeData.max_chours:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "Adding this course exceed max credit hours for the semester"}])
-        semData.currHours += courseHours.cHours
+        
+        elif degreeData.d_chours + data.courseHours > degreeData.d_maxchours:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "Adding this course exceeds max credit hours of the degree"}])
+        
+        already_exists = db.query(models.SemesterCourses).where(models.SemesterCourses.degreeId == data.degreeId, models.SemesterCourses.coursecode == data.courseCode).one_or_none()
+        if already_exists:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : f"Course is already in the degree in semester {already_exists.semNo}"}])
+        
+        preReqsCheck = db.query(models.SemesterCourses.coursecode).filter(models.SemesterCourses.degreeId == data.degreeId, models.SemesterCourses.semNo >= data.semNo)
+        preReqs = db.query(models.Prerequisite).filter(models.Prerequisite.courseCode == data.courseCode, models.Prerequisite.prereqCode.in_(preReqsCheck)).all()
+        if preReqs:
+            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "A pre requisite of this course is taught in this semester or before it."}])
+
+        dbData = models.SemesterCourses(
+            semNo = data.semNo,
+            degreeId = data.degreeId,
+            coursecode = data.courseCode
+        )
+
+        semData.currHours += data.courseHours
+        degreeData.d_chours += data.courseHours
+
         db.add(dbData)
         db.commit()
+
+    except HTTPException:
+        raise
+
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg": "Course could not be added"}])
+    
+    return {"msg" : "Success"}
 
 @app.get("/degree/{degreeId}")
 def degree_data(degreeId : str, db : Session = Depends(get_db)):
@@ -235,7 +272,8 @@ def add_course(course: schemas.CourseCreate, db: Session = Depends(get_db)):
     try:
         courseAdd = models.Course(
             code = course.code,
-            title = course.title
+            title = course.title,
+            cHours = course.cHours
         )
         db.add(courseAdd)
         db.commit()
