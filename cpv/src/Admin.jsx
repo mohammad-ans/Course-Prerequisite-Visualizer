@@ -1,5 +1,6 @@
-import { Routes, Route, useNavigate, replace, Link } from "react-router-dom"
+import { Routes, Route, useNavigate, replace, Link, useLocation } from "react-router-dom"
 import AddCoursePage from "./AdminPages/AddCourse"
+import logo from "./assets/LogoC.png"
 import { useEffect, useState } from "react"
 import useDashAuth from "./useDashAuth"
 import DeleteCoursePage from "./AdminPages/DeleteCourse";
@@ -11,9 +12,12 @@ import Main from "./AdminPages/Main";
 import api from "./api";
 import AddDegree from "./AdminPages/AddDegree";
 import AddCourseDegree from "./AdminPages/AddCourseDegree";
+import DelCourseDegree from "./AdminPages/DelCourseDegree"
 export default function Admin() {
     const { isAdmin, checking, username } = useDashAuth();
     const [hover, setHover] = useState(false);
+    const location = useLocation().pathname.toLowerCase() == "/admin";
+    
     const navigate = useNavigate();
     useEffect(() => {
 
@@ -36,7 +40,8 @@ export default function Admin() {
             <div className="dashboard-overlay">
             </div>
             <div className="dashboard-options">
-                <Link to="/admin"><svg viewBox="0 0 24 24" fill="none"
+                <div className="left-side">
+                <Link to="/admin" aria-label="Admin-dashboard" title="Admin-dashboard"><svg viewBox="0 0 24 24" fill="none"
                     xmlns="http://www.w3.org/2000/svg">
                     <path d="M4 10.5L10.8 4.8C11.5 4.2 12.5 4.2 13.2 4.8L20 10.5
            V19C20 20.1 19.1 21 18 21H14
@@ -49,7 +54,8 @@ export default function Admin() {
                         strokeLinejoin="round" />
                 </svg>
                 </Link>
-                
+                {location && <Link to="/" className="nav-logo"><img src={logo} alt="" /><h2>Cpv.com</h2></Link>}
+               </div> 
             <div className="dashboard-options-right">
                 
                 <button className="logout-button" onClick={logout}>Log out</button>
@@ -71,6 +77,7 @@ export default function Admin() {
                 <Route path="/superuser" element={<SuperUser />} />
                 <Route path="/degreeadd" element={<AddDegree />} />
                 <Route path="/coursedegree" element={<AddCourseDegree/>}/>
+                <Route path="/del/coursedegree" element={<DelCourseDegree/>}/>
             </Routes>
         </div>
     )

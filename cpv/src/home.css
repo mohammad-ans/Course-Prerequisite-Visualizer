@@ -50,8 +50,8 @@
     border-radius: 14px;
     padding: 8px 20px;
     cursor: pointer; 
-    transition: background-color 0.15s ease,
-    color 0.15s ease;
+    transition: background-color 0.3s ease,
+    color 0.3s ease;
 }
 .active-button{
     background-color: #bf0;

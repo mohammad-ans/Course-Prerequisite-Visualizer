@@ -46,3 +46,8 @@ class Course_Associate(BaseModel):
     degreeId : int
     courseCode : str
     courseHours : int
+
+class SemCourse_Del(BaseModel):
+    degreeId : int
+    courseCode : str
+    option : bool

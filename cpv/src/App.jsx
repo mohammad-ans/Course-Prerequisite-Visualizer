@@ -16,8 +16,8 @@ import Admin from './Admin.jsx'
 function App() {
     const [email, setEmail] = useState("");
     const loc = useLocation();
-    const hidePaths = ["/admin", "/admin/addcourse", "/admin/delcourse", "/admin/updatecourse", "/admin/superuser", "/admin/degreeadd", "/admin/coursedegree"];
-    const hidePathBoolean = hidePaths.includes(loc.pathname.toLowerCase());
+    const hidePaths = /\/admin/i;
+    const hidePathBoolean =hidePaths.test(loc.pathname);
     function hoverEnter(e) {
       console.log(e.currentTarget.children[0]);
         gsap.to(e.currentTarget.children[0], {

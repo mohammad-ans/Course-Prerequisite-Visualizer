@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends, HTTPException, Cookie, Response, status
 from emailsend import send_otp
 import random
 import jwt
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from datetime import datetime, timezone
 import time
 from sqlalchemy.orm import Session
@@ -206,6 +206,36 @@ def add_degree(degree : schemas.Degree_Add, db : Session = Depends(get_db)):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Degree could not be added."}])
     return {"msg" : "Success"}
 
+@app.get("/cdegrees/{course}")
+def course_in_degrees(course : str, db : Session = Depends(get_db)):
+    try:
+        degrees = db.execute(select(models.SemesterCourses.degreeId, models.SemesterCourses.semNo, models.Degree.dname).join(models.Degree, models.Degree.id == models.SemesterCourses.degreeId).where(models.SemesterCourses.coursecode == course)).mappings().all()
+        if not degrees:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=[{"msg" : "Course is not included in any degree program."}])
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Error occured while fetching the degrees."}])
+    return degrees
+
+@app.post("/delsemester/courses")
+def del_courseSem(data : schemas.SemCourse_Del, db : Session = Depends(get_db)):
+    try:
+        if data.option:
+            result = db.execute(delete(models.SemesterCourses).where(models.SemesterCourses.coursecode == data.courseCode))
+            print(result.rowcount)
+        else:
+            courses = db.query(models.SemesterCourses).where(models.SemesterCourses.degreeId == data.degreeId, models.SemesterCourses.coursecode == data.courseCode).one_or_none()
+            if not courses:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=[{"msg" : "Course doesn't exist in this course for this semester."}])
+            db.delete(courses)
+        db.commit()
+    except HTTPException:
+        raise
+    except Exception as e:
+        print(e)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Course could not be deleted."}])
+
 @app.post("/semester/courses")
 def associate_courseSem(data : schemas.Course_Associate, db : Session = Depends(get_db)):
     try:
@@ -213,10 +243,11 @@ def associate_courseSem(data : schemas.Course_Associate, db : Session = Depends(
         semData = db.query(models.Semesters).where(models.Semesters.semNo == data.semNo, models.Semesters.dId == data.degreeId).one_or_none()
         degreeData = db.query(models.Degree).where(models.Degree.id == data.degreeId).one_or_none()
 
-        if semData.currHours + data.courseHours > degreeData.max_chours:
+        if (semData.currHours + data.courseHours) > degreeData.max_chours:
+            print(semData.currHours, data.courseHours, degreeData.max_chours)
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "Adding this course exceed max credit hours for the semester"}])
         
-        elif degreeData.d_chours + data.courseHours > degreeData.d_maxchours:
+        elif (degreeData.d_chours + data.courseHours) > degreeData.d_maxchours:
             raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "Adding this course exceeds max credit hours of the degree"}])
         
         already_exists = db.query(models.SemesterCourses).where(models.SemesterCourses.degreeId == data.degreeId, models.SemesterCourses.coursecode == data.courseCode).one_or_none()
@@ -253,12 +284,14 @@ def associate_courseSem(data : schemas.Course_Associate, db : Session = Depends(
 def degree_data(degreeId : str, db : Session = Depends(get_db)):
     return_data = {}
     try:
-        degreeData = db.query(models.Degree.id == degreeId).one_or_none()
-        return_data = {"dname" : degreeData.dname, "dtype" : degreeData.dtype, "dhours" : degreeData.d_hours, "max_chours" : degreeData.max_chours, "semesters" : degreeData.years * 2}
+        print(degreeId)
+        degreeData = db.query(models.Degree).where(models.Degree.id == degreeId).one_or_none()
+        return_data = {"dname" : degreeData.dname, "dtype" : degreeData.dtype, "dhours" : degreeData.d_chours, "max_chours" : degreeData.max_chours, "semesters" : degreeData.years * 2}
         semData = db.query(models.SemesterCourses).where(models.SemesterCourses.degreeId == degreeData.id).all()
         return_data["semData"] = semData
         print(return_data)
     except Exception as e:
+        print(e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Could not get degree data"}])
     return return_data
 

@@ -4,17 +4,22 @@ import { gsap } from "gsap/gsap-core";
 import { useGSAP } from "@gsap/react";
 
 export default function Home() {
-    const [currentSelection, setSelection] = useState("v");
+    const [currentSelection, setSelection] = useState(0);
     const [answer, setAnswer] = useState("No");
-    // const timeoutref = useRef();
-    // const index = useRef(1);
-    // useEffect(()=>{
-    //     const items = ["v", "u", "p", "e", "s"];
+    useEffect(()=>{
+        function tim(){
+            const temp = (currentSelection + 1) % 5;
+            const element = document.querySelector(`.green-button${currentSelection}`)
+            if(element){
+                element.classList.remove("active-button")
+                document.querySelector(`.green-button${temp}`).classList.add("active-button");
+            }
+            setSelection(temp);
+        }
+        const temp = setTimeout(tim, 2500)
+        return () => clearTimeout(temp);
 
-    //      gsap.delayedCall(2, setSelection(s => {console.log(index.current);index.current = (index.current + 1) % 5;;return items[index - 1];}))
-
-
-    // }, [])
+    }, [currentSelection])
     function questionHandler(e) {
         if(answer != "No"){
             let el = document.querySelector(`.plus${answer}`).children[1].children[1];
@@ -42,14 +47,14 @@ export default function Home() {
         const timeline = gsap.timeline();
         timeline.to(".start-animation", {
             y : 0,
-            duration : 0.8,
-            stagger : 0.7,
+            duration : 0.7,
+            stagger : 0.6,
             ease : "sine"
         })
         timeline.to(".start-animation2", {
             transform : "translate3d(0, 0%, 0) scale3d(1, 1, 1)",
             lineHeight : "4.5rem",
-            duration : 1.2,
+            duration : 0.6,
             ease : "power1"
         })
         timeline.to(".visibility-hidden", {
@@ -84,18 +89,18 @@ export default function Home() {
             </div>
             <div className="benefit-text-container">
                 <div className="green-buttons">
-                    <div className="active-button green-button" onClick={(e) => { setSelection(s => "v"); document.querySelector(".active-button").classList.remove("active-button"); e.currentTarget.classList.add("active-button") }}>Visualize</div>
-                    <div className="green-button" onClick={(e) => activeButtonHandler(e, "u")}>Understand</div>
-                    <div className="green-button" onClick={(e) => activeButtonHandler(e, "p")}>Plan</div>
-                    <div className="green-button" onClick={(e) => activeButtonHandler(e, "e") }>Explore</div>
-                    <div className="green-button" onClick={(e) => activeButtonHandler(e, "s") }>Simplify</div>
+                    <div className="active-button green-button green-button0" onClick={e => activeButtonHandler(e, 0)}>Visualize</div>
+                    <div className="green-button green-button1" onClick={e => activeButtonHandler(e, 1)}>Understand</div>
+                    <div className="green-button green-button2" onClick={e => activeButtonHandler(e, 2)}>Plan</div>
+                    <div className="green-button green-button3" onClick={e => activeButtonHandler(e, 3) }>Explore</div>
+                    <div className="green-button green-button4" onClick={e => activeButtonHandler(e, 4) }>Simplify</div>
                 </div>
                 <div className="benefit-text">
-                    {currentSelection == "v" ? <div>Turn prerequisite data into clear graphical relationships.</div> : <></>}
-                    {currentSelection == "u" ? <div>Quickly grasp course dependencies and academic structure at a glance.</div> : <></>}
-                    {currentSelection == "p" ? <div>Understand course dependencies to plan your academic path.</div> : <></>}
-                    {currentSelection == "e" ? <div>Search and inspect individual courses to view their prerequisite relationships.</div> : <></>}
-                    {currentSelection == "s" ? <div>Reduce complexity by presenting academic data in a clear and organized way.</div> : <></>}
+                    {currentSelection == 0 ? <div>Turn prerequisite data into clear graphical relationships.</div> : <></>}
+                    {currentSelection == 1 ? <div>Quickly grasp course dependencies and academic structure at a glance.</div> : <></>}
+                    {currentSelection == 2 ? <div>Understand course dependencies to plan your academic path.</div> : <></>}
+                    {currentSelection == 3 ? <div>Search and inspect individual courses to view their prerequisite relationships.</div> : <></>}
+                    {currentSelection == 4 ? <div>Reduce complexity by presenting academic data in a clear and organized way.</div> : <></>}
                 </div>
             </div>
             <div className="white-container">

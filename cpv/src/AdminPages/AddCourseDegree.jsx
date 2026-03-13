@@ -29,7 +29,7 @@ export default function AddCourseDegree() {
             const tempCourse = courses.filter(element => element.code == code)[0];
             const tempDegree = degrees.filter(element => element.id == degree)[0];
             const totalHours = tempDegree.d_chours + tempCourse.cHours;
-            if (totalHours > tempDegree.max_chours){
+            if (totalHours > tempDegree.d_maxchours){
                 setError("Adding this course exceeds the max credit hours for this degree");
                 return;
             }
@@ -39,7 +39,6 @@ export default function AddCourseDegree() {
                 "courseCode" : code,
                 "courseHours" : tempCourse.cHours
             })
-            // console.log(response.data)
             setError("");
         }
         catch(error){
@@ -50,6 +49,14 @@ export default function AddCourseDegree() {
             else{
                 setError("Error while adding the course")
             }
+        }
+        finally{
+            setCode("");
+            setDegree("");
+            setType("");
+            setSemNo("");
+            setDegrees([]);
+            setFetchCourses(pre => !pre);
         }
     }
     async function setDegreeType(e) {
@@ -87,7 +94,7 @@ export default function AddCourseDegree() {
                     <option value="">Select Course From List</option>
                     {courses.map(element => <option value={element.code} key={element.code} >{`${element.code} - ${element.title} (${element.cHours} CH)`}</option>)}
                 </select>
-                <select value={type} onChange={setDegreeType}>
+                <select value={type} onChange={setDegreeType} required>
                     <option value="">Select Degree Type</option>
                     <option value="bachelors">Bachelors Level</option>
                     <option value="masters">Masters Level</option>
