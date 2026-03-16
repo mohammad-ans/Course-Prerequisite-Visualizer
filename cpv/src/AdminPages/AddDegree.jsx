@@ -50,8 +50,8 @@ export default function AddDegree() {
             <input type="text" placeholder="Enter Degree Name" value={dname} onChange={(e)=> setName(e.target.value)} required/>
             <select value={dtype} onChange={(e) => setType(e.target.value)}>
                 <option value="">Select degree type</option>
-                <option value="bachelors">Bachelors</option>
-                <option value="masters">Masters</option>
+                <option value="Bachelors">Bachelors</option>
+                <option value="Masters">Masters</option>
             </select>
             <input type="number" placeholder="Enter degree credit hours" value={dHours} onChange={(e) => setHours(e.target.value)} required/>
             <input type="number" placeholder="Enter degree max credit hours per semester" value={maxHours} onChange={(e) => setMaxHours(e.target.value)} required/>

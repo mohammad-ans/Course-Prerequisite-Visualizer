@@ -62,6 +62,7 @@ function AddCoursePage() {
       setCourses([]);
       setFetch(pre => !pre);
       setError("");
+      setHours("");
     }
     catch (error) {
       if(error.status == 403){
@@ -97,13 +98,10 @@ function AddCoursePage() {
         required
         onChange={e => setTitle(e.target.value)}
       />
-      <input type="number" value={cHours} onChange={(e)=>setHours(e.target.value)} required/>
+      <input type="number" value={cHours} onChange={(e)=>setHours(e.target.value)} placeholder="Enter credit hours" required/>
       <select className="add-courselist" onChange={coursesHandler} defaultValue="">
         <option value="">Select Pre-requisites</option>
         {availablePreReqs.map((element) => <option value={element.code} key={element.code}>{`${element.code} - ${element.title}`}</option>)}
-        <option value="a - Hi">Hi</option>
-        <option value="b - Ci">Ci</option>
-        <option value="c - Bi">Bi</option>
       </select>
       <button type="submit">Add Course</button>
     </form>

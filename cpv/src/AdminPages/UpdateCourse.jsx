@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import api from '../api';
 import { useNavigate, replace } from "react-router-dom";
+import useDashAuth from '../useDashAuth';
 
 export default function UpdateCoursePage() {
   const [code, setCode] = useState("");

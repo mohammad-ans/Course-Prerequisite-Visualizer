@@ -3,7 +3,7 @@ from database import SessionLocal
 import models, schemas
 from sqlalchemy.orm import Session
 from typing import List
-
+import sqlalchemy
 router = APIRouter()
 
 
@@ -21,7 +21,7 @@ def get_db():
 def add_course(course: schemas.CourseCreate, db: Session = Depends(get_db)):
     already_exists = db.query(models.Course).where(models.Course.code == course.code).one_or_none()
     if already_exists:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "Course Already Exists"}])
+        raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail=[{"msg" : "Course Already Exists"}])
     
     try:
         courseAdd = models.Course(
@@ -73,7 +73,6 @@ def return_preReqs(code : str, db : Session = Depends(get_db)):
         temp = db.query(models.Prerequisite).where(models.Prerequisite.courseCode == code).all()
     except Exception as e:
         print("Error occured while fetching pre-requisites from the database")
-        print(e)
         return []
 
     try:
@@ -153,18 +152,22 @@ def update_course(code: str, course: schemas.CourseUpdate, db: Session = Depends
     return {"msg" : "Successfully updated Course"}
 
 
-@router.delete("/courses/{code}",
+@router.delete("/courses/{code}/{option}",
                summary="Delete a course",
                description="Given an existing course code, deletes the course and remove it's pre-requiste relationships with other courses.")
-def delete_course(code: str, db: Session = Depends(get_db)):
+def delete_course(code: str, option : bool, db: Session = Depends(get_db)):
     course = db.query(models.Course).where(models.Course.code == code).one_or_none()
     if not course:
         raise HTTPException(status_code=404, detail=[{"msg": "Course not found"}])  
     try:
         db.query(models.Prerequisite).where( models.Prerequisite.courseCode == code).delete()
         db.query(models.Prerequisite).where(models.Prerequisite.prereqCode == code).delete()
+        if option:
+            db.execute(sqlalchemy.delete(models.SemesterCourses).where(models.SemesterCourses.coursecode == code))
         db.delete(course)
+        db.commit()
+    except sqlalchemy.exc.IntegrityError:
+        raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail=[{"msg" : "Course is still associated with degrees. Disassociate it first."}])
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "An error occured on the server side while deleting the course. Contact server office."}])
-    db.commit()
     return {"detail": "Course deleted"}

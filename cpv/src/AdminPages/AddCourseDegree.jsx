@@ -40,6 +40,11 @@ export default function AddCourseDegree() {
                 "courseHours" : tempCourse.cHours
             })
             setError("");
+            setCode("");
+            setDegree("");
+            setType("");
+            setSemNo("");
+            setDegrees([]);
         }
         catch(error){
             console.log(error)
@@ -51,11 +56,6 @@ export default function AddCourseDegree() {
             }
         }
         finally{
-            setCode("");
-            setDegree("");
-            setType("");
-            setSemNo("");
-            setDegrees([]);
             setFetchCourses(pre => !pre);
         }
     }
@@ -96,8 +96,8 @@ export default function AddCourseDegree() {
                 </select>
                 <select value={type} onChange={setDegreeType} required>
                     <option value="">Select Degree Type</option>
-                    <option value="bachelors">Bachelors Level</option>
-                    <option value="masters">Masters Level</option>
+                    <option value="Bachelors">Bachelors Level</option>
+                    <option value="Masters">Masters Level</option>
                 </select>
                 <select value={degree} onChange={degreeChange} required>
                     <option value="">Select a Degree</option>

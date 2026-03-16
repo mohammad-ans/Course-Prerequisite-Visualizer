@@ -38,7 +38,7 @@
 .nav-list{
     display: flex;
     align-items: center;
-    gap: 60px;
+    gap: 4vw;
     font-weight: 550;
     font-size: 1rem;
 }

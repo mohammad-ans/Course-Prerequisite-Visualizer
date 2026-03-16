@@ -1,8 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import api from './api';
+import {useLocation} from "react-router-dom";
 import "./SearchCoursePage.css"
 import debounce from "lodash.debounce"
 function SearchCoursePage() {
+  const {search} = useLocation()
+  const params = new URLSearchParams(search)
+  const code = params.get("code") || "";
   const [query, setQuery] = useState('');
   const [course, setCourse] = useState(null);
   const [suggested, setSuggested] = useState(null);
@@ -12,6 +16,12 @@ function SearchCoursePage() {
   const [followUps, setfollowUps] = useState([]);
   const [searchSuggestions, setSuggestions] = useState([]);
   const [searchActive, setsearchActive] = useState(false);
+
+  useEffect(()=>{
+    if (code != "") 
+      searchByCode(code);
+  }, [])
+
   const debouncedSearch = useCallback(debounce((queryTemp, queryType) => callSearch(queryTemp, queryType), 300),
     [])
   async function handleSearch(e) {

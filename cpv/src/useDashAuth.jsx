@@ -19,6 +19,7 @@ export function DashboardAuthProvider({children}){
             }
             catch(e){
                 setIsAdmin(true);
+                setIsAdmin("admin")
             }
             finally{
                 setChecking(false);

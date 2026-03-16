@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
-import "./home.css"
+import "./home.css";
+import {Link} from "react-router-dom"
 import { gsap } from "gsap/gsap-core";
 import { useGSAP } from "@gsap/react";
 
@@ -85,7 +86,7 @@ export default function Home() {
                 <div className="second-part visibility-hidden">
                     <div>Everything is built and designed</div> <div>to help students so that they can understand their </div> <div>degree structure by eliminating prerequisite confusion</div> <div> and thus achieve their goals.</div>
                 </div>
-                <div className="nav-button-2 visibility-hidden">Search Courses</div>
+                <Link to="/search"><div className="nav-button-2 visibility-hidden">Search Courses</div></Link>
             </div>
             <div className="benefit-text-container">
                 <div className="green-buttons">

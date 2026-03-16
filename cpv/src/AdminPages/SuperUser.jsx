@@ -13,11 +13,11 @@ export default function SuperUser() {
     const tempEmail= useRef("");
     const {checking, isAdmin} = useDashAuth();
 
-    // useEffect(()=>{
-    //     if(!checking)
-    //         if(isAdmin != "admin")
-    //             navigate("/signin");
-    // }, [checking])
+    useEffect(()=>{
+        if(!checking)
+            if(isAdmin != "admin")
+                navigate("/signin");
+    }, [checking])
     async function getUsers() {
         try {
             const response = await api.get("/users")

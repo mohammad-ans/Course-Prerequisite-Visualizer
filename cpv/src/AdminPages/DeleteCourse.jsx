@@ -9,6 +9,7 @@ function DeleteCoursePage() {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [trigger, setTrigger] = useState(false);
+  const [option, setOption] = useState(false)
   async function getCourses() {
     try{
       const response = await api.get("/courses");
@@ -33,7 +34,7 @@ function DeleteCoursePage() {
   async function handleDelete(e){
     e.preventDefault();
     try {
-      const response = await api.delete(`/courses/${code}`);
+      const response = await api.delete(`/courses/${code}/${option}`);
       setError("");
       setTrigger(t => !t);
     } 
@@ -53,7 +54,9 @@ function DeleteCoursePage() {
       setCode("");
     }
   };
-
+  async function optionChange(e) {
+    setOption(pre => !pre);
+  }
   return (
     <div className="course-page">
       <h2 className="dashboard-headings">
@@ -70,6 +73,13 @@ function DeleteCoursePage() {
         <option value="">Select from the list</option>
         {courses.map((element)=><option key={element.code} value={element.code}>{`${element.code} - ${element.title}`}</option>)}
       </select>
+      <div className="update-name">
+      <div>
+        <input type="checkbox" value={option} onChange={optionChange}/>
+        <span>Remove course from all degrees</span>
+      </div>
+
+      </div>
       <button type="submit">Delete Course</button>
     </form>
     <div className="course-error courseDel-error">{error}</div>

@@ -77,7 +77,7 @@ export default function DelCourseDegree() {
             </div>
             <select value={degreeId} onChange={degreeChange} disabled={option}>
                 <option value="">Select a Degree</option>
-                {degrees.map(element => <option value={element.degreeId} key={element.degreeId}>{`${element.dname}--Semester No. ${element.semNo}`}</option>)}
+                {degrees.map(element => <option value={element.degreeId} key={element.degreeId}>{`${element.dtype} in ${element.dname}--Semester No. ${element.semNo}`}</option>)}
             </select>
             </div>
             <button type="submit">Delete Course</button>

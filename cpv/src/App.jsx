@@ -13,13 +13,13 @@ import CourseGraph from './Source'
 import OTPForm from './Otp'
 import { gsap } from 'gsap/gsap-core'
 import Admin from './Admin.jsx'
+import Degrees from './Degrees.jsx'
 function App() {
     const [email, setEmail] = useState("");
     const loc = useLocation();
     const hidePaths = /\/admin/i;
     const hidePathBoolean =hidePaths.test(loc.pathname);
     function hoverEnter(e) {
-      console.log(e.currentTarget.children[0]);
         gsap.to(e.currentTarget.children[0], {
             width : "100%",
             duration : 0.5,
@@ -57,6 +57,7 @@ function App() {
       <Route path="/listCourse" element={<ListCoursesPage/>}/>
       <Route path="/search" element={<SearchCoursePage/>}/>
       <Route path="/graph" element={<CourseGraph/>}/>
+      <Route path="/degrees" element={<Degrees/>}/>
     </Routes>
       </DashboardAuthProvider>
     {!hidePathBoolean && <Footer/>}
