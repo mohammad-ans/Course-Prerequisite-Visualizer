@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import api from './api';
 import {useLocation} from "react-router-dom";
 import "./SearchCoursePage.css"
@@ -16,7 +16,8 @@ function SearchCoursePage() {
   const [followUps, setfollowUps] = useState([]);
   const [searchSuggestions, setSuggestions] = useState([]);
   const [searchActive, setsearchActive] = useState(false);
-
+  const [degrees, setDegrees] = useState([]);
+  const searchRef = useRef();
   useEffect(()=>{
     if (code != "") 
       searchByCode(code);
@@ -24,7 +25,7 @@ function SearchCoursePage() {
 
   const debouncedSearch = useCallback(debounce((queryTemp, queryType) => callSearch(queryTemp, queryType), 300),
     [])
-  async function handleSearch(e) {
+  async function handleSearch() {
     document.querySelector(".search-input").blur();
     try {
       if(query == "") {
@@ -49,6 +50,7 @@ function SearchCoursePage() {
       }
       setCourse(response.data.courseDetails);
       setpreReqs(pre => response.data.preReqs);
+      setDegrees(response.data.degrees);
       setfollowUps(pre => response.data.followUps);
       setError(null);
       setSuggested(null);
@@ -115,8 +117,11 @@ function SearchCoursePage() {
     }
   }
   function enterSubmit(e) {
+    console.log(e.keyCode, e.code)
     if(e.keyCode == 13)
-      handleSearch(e)
+      handleSearch()
+    if(e.keyCode == 27)
+      e.target.blur();
   }
   return (
     <div className="search-course">
@@ -135,7 +140,7 @@ function SearchCoursePage() {
           />
           
       {searchActive && (
-        <ul className="search-suggestions" onMouseEnter={() => setsearchActive(true)}>
+        <ul className="search-suggestions" ref={searchRef} onMouseEnter={() => setsearchActive(true)}>
           {searchSuggestions.map((element) => <li key={element.code} onMouseDown={onSuggestionSelect}>
             <span className="super-search">{searchBy == "code" ? element.code : element.title}</span>
             {" ("}<span className="mini-search">{searchBy == "code" ? element.title : element.code}</span>{")"}
@@ -175,6 +180,17 @@ function SearchCoursePage() {
                 followUps.map((element) => <li key={element.code}>
                   {`${element.code} - ${element.title}`}
                 </li>)
+            }
+          </ul>
+          <h2>Degree Programs:</h2>
+          <ul className="degrees-list">
+            {
+              degrees.length == 0 ?
+              (<p>Course is not included in any degree.</p>)
+              :
+            (degrees.map((element) => <li key={element}>
+                {element}
+              </li>))
             }
           </ul>
         </div>

@@ -14,6 +14,7 @@ import OTPForm from './Otp'
 import { gsap } from 'gsap/gsap-core'
 import Admin from './Admin.jsx'
 import Degrees from './Degrees.jsx'
+import ContactUs from './Contactus.jsx'
 function App() {
     const [email, setEmail] = useState("");
     const loc = useLocation();
@@ -58,6 +59,7 @@ function App() {
       <Route path="/search" element={<SearchCoursePage/>}/>
       <Route path="/graph" element={<CourseGraph/>}/>
       <Route path="/degrees" element={<Degrees/>}/>
+      <Route path="/contactus" element={<ContactUs/>}/>
     </Routes>
       </DashboardAuthProvider>
     {!hidePathBoolean && <Footer/>}

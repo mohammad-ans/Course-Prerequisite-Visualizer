@@ -32,9 +32,7 @@ export default function CourseGraph() {
     api.get(`/graph/${val}`)
       .then(res => {
         const data = res.data;
-        console.log("Graph data from backend:", data);
-
-        // Ensure nodes have valid id and label
+        
         const nodes = data.nodes
           .filter(node => node.id)
           .map(node => ({
@@ -44,7 +42,6 @@ export default function CourseGraph() {
             }
           }));
 
-        // Ensure edges have valid source and target
         const edges = data.links
           .filter(link => link.source && link.target)
           .map(link => ({
@@ -58,7 +55,7 @@ export default function CourseGraph() {
         setElements([...nodes, ...edges]);
       })
       .catch(err => {
-        console.error("Error fetching graph:", err);
+        console.error("Error fetching graph");
       });
   }
   useEffect(() => {
@@ -77,7 +74,6 @@ export default function CourseGraph() {
 
     const cy = cyRef.current;
 
-    // Remove previous listeners
     cy.removeListener('tap', 'node');
 
     cy.on('tap', 'node', evt => {
@@ -162,6 +158,8 @@ export default function CourseGraph() {
   function enterSupport(e) {
     if(e.keyCode == 13)
       handleSearch()
+    if(e.keyCode == 27)
+      e.target.blur();
   }
   return (
 

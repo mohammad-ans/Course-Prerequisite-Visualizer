@@ -1,0 +1,27 @@
+.contact-us{
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 30px;
+    width: 350px;
+    margin: 60px auto;
+    background : linear-gradient(#186aff, #5f7bad);
+    border-radius: 6px;
+}
+.contact-us p{
+    margin-left: 8px;
+    margin-top: 4px;
+    margin-bottom: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+.contact-us p svg{
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+.contact-us .message{
+    margin-left: 0;
+    cursor: auto;
+}

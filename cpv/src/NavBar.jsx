@@ -77,7 +77,7 @@ export default function NavBar() {
                     <li onMouseEnter={hoverEnter} onMouseLeave={hoverLeave} onClick={navCloseOnNavigation}><span className="line-blue"></span><Link to="/about">About</Link></li>
                 </ul>
                 <div className="nav-buttons">
-                    <button className="nav-button-1">Get in Touch</button>
+                    <Link to="/contactus"><button className="nav-button-1">Get in Touch</button></Link>
                     <Link to="/search"><button className="nav-button-2">Search Courses</button></Link>
                     <div className="hamburger" onClick={func}>
                         <div className="line-1"></div>
