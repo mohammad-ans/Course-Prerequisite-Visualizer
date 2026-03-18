@@ -4,7 +4,7 @@ import Semester from "./Semester";
 import api from "./api";
 
 export default function Degrees() {
-    const [degree, setDegree] = useState("");
+    const [degree, setDegree] = useState(localStorage.getItem("degree") || "");
     const [degrees, setDegrees] = useState([]);
     const [dname, setDname] = useState("");
     const [dtype, setType] = useState("");
@@ -13,21 +13,13 @@ export default function Degrees() {
     const [dhours, setDhours] = useState("");
     const [overlay, setOverlay] = useState(true);
     const [error, setError] = useState("");
-    useEffect(()=>{
-        async function getDegrees() {
-            try{
-                const response = await api.get("/degrees");
-                setDegrees(response.data);
-            }
-            catch(error) {
-                setError("An error occured while fetching degrees")
-            }
-        }
-        getDegrees();
-    }, [])
     async function degreeChange(e) {
         const dId = e.target.value;
         setDegree(dId);
+        localStorage.setItem("degree", dId);
+        getDegData(dId);
+    }
+    async function getDegData(dId) {
         if(dId == "")
             return;
         try{
@@ -42,6 +34,19 @@ export default function Degrees() {
             setError("An error occured while fetching degree data");
         }
     }
+    useEffect(()=>{
+        async function getDegrees() {
+            try{
+                const response = await api.get("/degrees");
+                setDegrees(response.data);
+            }
+            catch(error) {
+                setError("An error occured while fetching degrees")
+            }
+        }
+        getDegrees();
+        getDegData(degree);
+    }, [])
     function removeOverlay(e) {
         setOverlay(false);
     }
@@ -67,6 +72,12 @@ export default function Degrees() {
                 <li>{`Max Allowed credit hours per semester: ${maxChours}`}</li>
                 <li>{`Total Semesters : ${semData.length}`}</li>
             </ul>
+            {/* <div className="show-prereqs-button">
+                <p>Show Pre-requisite lines: </p>
+                <span className="background">
+                    <span className="circle"></span>
+                </span>
+            </div> */}
             <div className="degree-area">
                 {semData.map(element => <Semester key={element.semNo} element={element}/>)}
             </div></>): (<></>)}

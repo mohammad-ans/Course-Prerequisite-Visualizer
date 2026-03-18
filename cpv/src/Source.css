@@ -8,6 +8,13 @@
     position: relative;
     min-height: 1000px;
 }
+.graph-area select{
+    padding: 6px;
+    border-radius: 4px;
+    width: 80vw;
+    border: none;
+    margin: 20px 10vw;
+}
 .graph-page-overlay{
     position: absolute;
     z-index: 2;

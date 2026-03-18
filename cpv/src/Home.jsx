@@ -140,25 +140,25 @@ export default function Home() {
                                 <span className="plus-2"></span>
                             </span>
                             </div>
-                            {answer == "1" ? <div className="answer">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, sapiente non vero, deserunt qui eveniet voluptate, voluptates quos dolor delectus praesentium nulla a excepturi esse.</div> : <></>}
+                            {answer == "1" ? <div className="answer">Cpv works by adding courses and then populating degrees with the university. The structure of the degress is given separately. As some course have pre-requisites that help in better understanding in the course. Those courses are mentioned for the benefit of students.</div> : <></>}
                             </div>
                         <div className="question">
                             <div className="separator"></div>
-                            <div className="question-wrapper plus2"  onClick={questionHandler}><span className="actual-question">How does CPV works?</span><span className="plus">
+                            <div className="question-wrapper plus2"  onClick={questionHandler}><span className="actual-question">What to do if my degree is not here?</span><span className="plus">
                                 <span className="plus-1"></span>
                                 <span className="plus-2"></span>
                             </span>
                             </div>
-                            {answer == "2" ? <div className="answer">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, sapiente non vero, deserunt qui eveniet voluptate, voluptates quos dolor delectus praesentium nulla a excepturi esse.</div> : <></>}
+                            {answer == "2" ? <div className="answer">If your degree is not here, make sure you have checked your degree name's abbreviations too as some degrees's name might be abbreviated.</div> : <></>}
                             </div>
                         <div className="question">
                             <div className="separator"></div>
-                            <div className="question-wrapper plus3" onClick={questionHandler}><span className="actual-question">How does CPV works?</span><span className="plus">
+                            <div className="question-wrapper plus3" onClick={questionHandler}><span className="actual-question">The graph zoom is not working, why?</span><span className="plus">
                                 <span className="plus-1"></span>
                                 <span className="plus-2"></span>
                             </span>
                             </div>
-                            {answer == "3" ? <div className="answer">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sunt, sapiente non vero, deserunt qui eveniet voluptate, voluptates quos dolor delectus praesentium nulla a excepturi esse.</div> : <></>}
+                            {answer == "3" ? <div className="answer">Reload the page and make sure allow zoom button is turned on. If the problem still presists, email your detailed query and we will get back to you.</div> : <></>}
                             </div>
                     </div>
                 </div>

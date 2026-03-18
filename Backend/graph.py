@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from database import SessionLocal
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 import models
 
 router = APIRouter()
@@ -12,8 +13,8 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/graph")
-def get_graph(db : Session = Depends(get_db)):
+@router.get("/graph/{degree}")
+def get_graph(degree : str, db : Session = Depends(get_db)):
 #     return{
 #   "nodes": [
 #     { "id": 'CS101', "label": 'Intro to CS' },
@@ -29,11 +30,10 @@ def get_graph(db : Session = Depends(get_db)):
 #     { "source": 'CS103', "target": 'CS105' }
 #   ]
 # }
-
-    courses = db.query(models.Course).all()
-    prereqs = db.query(models.Prerequisite).all()
-
+    courses_return = db.execute(select(models.Course).join(models.SemesterCourses, models.SemesterCourses.coursecode == models.Course.code).where(models.SemesterCourses.degreeId == degree)).scalars().all()
+    courses = [element.code for element in courses_return]
+    prereqs = db.execute(select(models.Prerequisite).where(models.Prerequisite.courseCode.in_(courses), models.Prerequisite.prereqCode.in_(courses))).scalars().all()
     return {
-        "nodes": [{"id": c.code, "label": c.title} for c in courses],
+        "nodes": [{"id": c.code, "label": c.title} for c in courses_return],
         "links": [{"source": p.prereqCode, "target": p.courseCode} for p in prereqs]
     }

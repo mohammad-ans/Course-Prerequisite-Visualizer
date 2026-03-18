@@ -87,3 +87,25 @@
     cursor: pointer;
     margin-top: 10px;
 }
+/* .show-prereqs-button .background{
+    display: inline-block;
+    background-color: #272932;
+    border-radius: 11px;
+    width: 50px;
+    height: 24px;
+    padding: 2px;
+}
+.show-prereqs-button .circle{
+    background-color: white;
+    border-radius: 50%;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+}
+.show-prereqs-button{
+    display: flex;
+    align-items: center;
+    gap: 14px;
+} */
+
+

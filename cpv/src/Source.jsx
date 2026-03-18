@@ -12,8 +12,24 @@ export default function CourseGraph() {
   const [selectedNode, setSelectedNode] = useState(null);
   const [overlayNotes, setNote] = useState(true);
   const [zoomAllow, setZoom] = useState(true);
-  useEffect(() => {
-    api.get("/graph")
+  const [degrees, setDegrees] = useState([]);
+  const [degree, setDegree] = useState(localStorage.getItem("degree") || "");
+
+  useEffect(()=>{
+      async function getDegrees() {
+          try{
+              const response = await api.get("/degrees");
+              setDegrees(response.data);
+          }
+          catch(error) {
+              setError("An error occured while fetching degrees")
+          }
+      }
+      getDegrees();
+  }, [])
+
+  function getGraphData(val) {
+    api.get(`/graph/${val}`)
       .then(res => {
         const data = res.data;
         console.log("Graph data from backend:", data);
@@ -44,7 +60,10 @@ export default function CourseGraph() {
       .catch(err => {
         console.error("Error fetching graph:", err);
       });
-
+  }
+  useEffect(() => {
+    if (degree != "")
+      getGraphData(degree);
   }, []);
   useEffect(()=>{
     if(overlayNotes)
@@ -134,7 +153,16 @@ export default function CourseGraph() {
   setZoom(pre => !pre);
   }
 
-
+  function degChange(e){
+    const val = e.target.value;
+    setDegree(val);
+    localStorage.setItem("degree", val);
+    getGraphData(val);
+  }
+  function enterSupport(e) {
+    if(e.keyCode == 13)
+      handleSearch()
+  }
   return (
 
     <div className="graph-area">
@@ -146,6 +174,8 @@ export default function CourseGraph() {
           <li>The graph is dynamic, meaning you can zoom in and out in the bordered area of the graph. This sometimes create a problem for some users, so zoom can be enabled or disabled using the button provided.</li>
           <li>If turned on, and to scroll down use the area outside the graph borders</li>
           <li>If stuck, refresh the page. Graph will reload again.</li>
+          <li>There are many courses, so copy your course code and search for it and then zoom in the highlighted course if you want to see a specific course.</li>
+          <li>If zoom is enabled, you can also click on a course and get an alert about it's name and code.</li>
           </ul>
           <button className="graph-button button-design" onClick={closeOverlay}>I understand</button>
         </div></> : <></>}
@@ -155,9 +185,14 @@ export default function CourseGraph() {
           placeholder="Search course code..."
           value={search}
           onChange={e => setSearch(e.target.value)}
+          onKeyDown={enterSupport}
         />
         <button onClick={handleSearch}>Search</button>
       </div>
+      <select value={degree} onChange={degChange}>
+        <option value="">Select a degree</option>
+        {degrees.map(element => <option value={element.id} key={element.id}>{`${element.dtype} in ${element.dname}`}</option>)}
+      </select>
       <div className="button-design-circle"><p>Allow Zoom:</p><span className="background-ofbutton" onClick={zoomHandler}><span className="button-circle"></span></span></div>
       <div className="graph-overlay-helper">
         {zoomAllow?<div className="graph-overlay"></div> : <></>}

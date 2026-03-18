@@ -72,9 +72,9 @@ export default function NavBar() {
             <nav className="main-nav">
                 <Link to="/" className="logo"><img src={logo} alt="C"/><span className="logo-span">Cpv.com</span></Link>
                 <ul className="nav-list">
-                    <li onMouseEnter={hoverEnter} onMouseLeave={hoverLeave} onClick={navCloseOnNavigation}><span className="line-blue"></span><Link to="/about">About</Link></li>
                     <li onMouseEnter={hoverEnter} onMouseLeave={hoverLeave} onClick={navCloseOnNavigation}><span className="line-blue"></span><Link to="/graph">Prerequisite Graph</Link></li>
                     <li onMouseEnter={hoverEnter} onMouseLeave={hoverLeave} onClick={navCloseOnNavigation}><span className="line-blue"></span><Link to="/degrees">Degrees</Link></li>
+                    <li onMouseEnter={hoverEnter} onMouseLeave={hoverLeave} onClick={navCloseOnNavigation}><span className="line-blue"></span><Link to="/about">About</Link></li>
                 </ul>
                 <div className="nav-buttons">
                     <button className="nav-button-1">Get in Touch</button>
