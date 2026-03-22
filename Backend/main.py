@@ -14,7 +14,7 @@ from dotenv import load_dotenv
 import os
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Annotated, Union, List
-import auth, degrees, graph, users, courses
+import auth, degrees, graph, users, courses, chatbot
 load_dotenv()
 
 origins = [
@@ -35,6 +35,7 @@ app.include_router(courses.router)
 app.include_router(graph.router)
 app.include_router(degrees.router)
 app.include_router(users.router)
+app.include_router(chatbot.router)
 
 models.Base.metadata.create_all(bind=engine)
 

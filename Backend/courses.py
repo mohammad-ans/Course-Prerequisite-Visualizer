@@ -112,12 +112,15 @@ def get_course(searchQuery: str, searchby : str, db: Session = Depends(get_db)):
             except Exception as E:
                 raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Error occured while fetching course post options"}])
             prereqs_list = return_preReqs(course.code, db)
-            return {"courseDetails" : course, "preReqs" : prereqs_list, "followUps" : follow_ups}
+            degrees = db.execute(sqlalchemy.select(models.Degree.dname).join(models.Course, models.Course.code == course.code).join(models.SemesterCourses, (models.SemesterCourses.degreeId == models.Degree.id) & (models.SemesterCourses.coursecode == course.code))).scalars().all()
+            return {"courseDetails" : course, "preReqs" : prereqs_list, "followUps" : follow_ups, "degrees" : degrees}
         
         if searchby == "code":
             suggestedCourses = db.query(models.Course).where(models.Course.code.ilike(f"%{searchQuery}%")).all()
         else:
             suggestedCourses = db.query(models.Course).where(models.Course.title.ilike(f"%{searchQuery}%") ).all()
+    except HTTPException:
+        raise
     except Exception:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Error occured while searching the course. Try Again"}])
     if not suggestedCourses:
@@ -145,10 +148,10 @@ def update_course(code: str, course: schemas.CourseUpdate, db: Session = Depends
                 prereqCode = preReq["code"]
             )
             db.add(preReq_data_add)
+        db.commit()
     except Exception as e:
         print("Error Occured while updating preRequistes for the course", e)
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Server in maintainenace"}])
-    db.commit()
     return {"msg" : "Successfully updated Course"}
 
 

@@ -23,6 +23,15 @@ class Degree(Base):
     d_chours = Column(Integer)
     max_chours = Column(Integer)
     years = Column(Integer)
+    def to_dict(self):
+        return {
+            "id" : self.id,
+            "dname" : self.dname,
+            "dtype" : self.dtype,
+            "degree_credithrs" : self.d_chours,
+            "max_chours_perSem" : self.max_chours,
+            "semesters" : self.years * 2 
+        }
 
 class SemesterCourses(Base):
     __tablename__ =  "degreecourses"

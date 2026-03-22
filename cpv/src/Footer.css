@@ -20,11 +20,15 @@ footer .logo-span{
     gap: 100px;
 }
 .social-media{
-    margin: 40px 20px;
     display: flex;
     flex-direction: column;
     
 }
 .social-media p{
     margin-bottom: 10px;
+}
+.footer-columns{
+    margin: 40px 20px;
+    display: flex;
+    gap: 40px;
 }

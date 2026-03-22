@@ -1,0 +1,95 @@
+.chatbot{
+    height: calc(100vh - 170px);
+    margin-top: 30px;
+    padding: 20px;
+    position: relative;
+    width: 100vw;
+}
+.typearea{
+    border: 1px solid rgb(47, 47, 47);
+    position: absolute;
+    height: 120px;
+    border-radius: 8px;
+    width: calc(100vw - 42px);
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 8px;
+    gap: 10px;
+    background-color: black;
+}
+.typearea button{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+}
+.sendsvg{
+    width: 24px;
+    height: 24px;
+}
+.typearea textarea{
+    resize: none;
+    background-color: transparent;
+    color: white;
+    border: none;
+    padding: 2px 6px;
+}
+.typearea textarea:focus{
+    border: none;
+    outline: none;
+}
+.typearea select{
+    padding: 5px;
+    border-radius: 2px;
+    border: none;
+    size: 3;
+    background-color: transparent;
+    color: white;
+    border: 1px solid rgb(100, 100, 100);
+}
+.message-area{
+    position: absolute;
+    width: calc(100% - 42px);
+    left: 21px;
+    height: calc(100vh - 240px);
+    padding: 8px 14px;
+    padding-bottom: 250px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+}
+.response-msg{
+    padding: 4px;
+    width: 90%;
+    height: auto;
+    flex-shrink: 0;
+    overflow: hidden;
+    word-break: break-word;
+    margin-bottom: 20px;
+}
+.request-msg{
+    background-color: rgb(47, 47, 47);
+    padding: 12px 10px;
+    display: inline-block;
+    width: 40%;
+    border-radius: 12px;
+    height: auto;
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+    align-self: flex-end;
+    word-break: break-word;
+}
+.dot{
+    background-color: white;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    transform: scale(2, 2);
+    flex-shrink: 0;
+}

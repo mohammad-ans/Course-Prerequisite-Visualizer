@@ -51,3 +51,7 @@ class SemCourse_Del(BaseModel):
     degreeId : int
     courseCode : str
     option : bool
+
+class AI_question(BaseModel):
+    question : str
+    degreeId : int

@@ -156,9 +156,11 @@ export default function CourseGraph() {
     getGraphData(val);
   }
   function enterSupport(e) {
-    if(e.keyCode == 13)
-      handleSearch()
-    if(e.keyCode == 27)
+    if(e.keyCode == 13) {
+      handleSearch();
+      e.currentTarget.blur();
+    }
+    else if(e.keyCode == 27)
       e.target.blur();
   }
   return (
