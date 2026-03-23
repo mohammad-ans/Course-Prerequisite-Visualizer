@@ -30,10 +30,13 @@ def get_graph(degree : str, db : Session = Depends(get_db)):
 #     { "source": 'CS103', "target": 'CS105' }
 #   ]
 # }
-    courses_return = db.execute(select(models.Course).join(models.SemesterCourses, models.SemesterCourses.coursecode == models.Course.code).where(models.SemesterCourses.degreeId == degree)).scalars().all()
-    courses = [element.code for element in courses_return]
-    prereqs = db.execute(select(models.Prerequisite).where(models.Prerequisite.courseCode.in_(courses), models.Prerequisite.prereqCode.in_(courses))).scalars().all()
-    return {
-        "nodes": [{"id": c.code, "label": c.title} for c in courses_return],
-        "links": [{"source": p.prereqCode, "target": p.courseCode} for p in prereqs]
-    }
+    try:
+        courses_return = db.execute(select(models.Course).join(models.SemesterCourses, models.SemesterCourses.coursecode == models.Course.code).where(models.SemesterCourses.degreeId == degree)).scalars().all()
+        courses = [element.code for element in courses_return]
+        prereqs = db.execute(select(models.Prerequisite).where(models.Prerequisite.courseCode.in_(courses), models.Prerequisite.prereqCode.in_(courses))).scalars().all()
+        return {
+            "nodes": [{"id": c.code, "label": c.title} for c in courses_return],
+            "links": [{"source": p.prereqCode, "target": p.courseCode} for p in prereqs]
+        }
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=[{"msg" : "Error occured while fetching graphh data"}])

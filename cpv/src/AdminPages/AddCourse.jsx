@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import "./AddCourse.css"
 import api from '../api'
 import { useNavigate, replace } from 'react-router-dom';
@@ -10,6 +10,7 @@ function AddCoursePage() {
   const [availablePreReqs, setAvailablePreReqs] = useState([]);
   const [courses, setCourses] = useState([]);
   const [error, setError] = useState("");
+  const errorRef = useRef();
   const [fetchCourses, setFetch] = useState(false);
   const navigate = useNavigate();
   useEffect(()=>{
@@ -19,9 +20,14 @@ function AddCoursePage() {
         // const arr = response.data.map((element) => element.code + " - " + element.title);
         setAvailablePreReqs(response.data);
       }
-      catch(e){
-        setError("Error occured while fetching courses");
-        console.error(e);
+      catch(error){
+        errorRef.current.style.color = "red";
+        if(error.status == 401){
+            alert("Log In again. Your session has expired.")
+            navigate("/signin", replace)
+        }
+        else
+            setError("Error occured while fetching courses for pre-reqs list.");
       }
     }
     func();
@@ -56,20 +62,21 @@ function AddCoursePage() {
     e.preventDefault();
     try {
       const response = await api.post("/courses", { code : code.toUpperCase(), title: title.toUpperCase(), preReqs : courses, cHours : cHours});
-      console.log("Course added:", response.data);
+      errorRef.current.style.color = "green";
       setCode(""); 
       setTitle("");
       setCourses([]);
       setFetch(pre => !pre);
-      setError("");
+      setError(`Course added: ${response.data}`);
       setHours("");
     }
     catch (error) {
-      if(error.status == 403){
+      errorRef.current.style.color = "red";
+      if(error.status == 401){
           alert("Log In again. Your session has expired.")
           navigate("/signin", replace)
       }
-      if(error.response.data && error.response.data.detail) {
+      else if(error.response && error.response.data.detail) {
         setError(error.response.data.detail[0].msg);
       }
       else {
@@ -105,7 +112,7 @@ function AddCoursePage() {
       </select>
       <button type="submit">Add Course</button>
     </form>
-    <div className="course-error courseAdd-error">{error}</div>
+    <div className="course-error courseAdd-error" ref={errorRef}>{error}</div>
     <div className="selected-prereqs">
     <h2>Pre-Requisites: </h2>
     <ul id="prereqs-list">

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import api from '../api';
 import "./AddCourse.css"
 import { replace, useNavigate } from "react-router-dom";
@@ -6,6 +6,7 @@ import { replace, useNavigate } from "react-router-dom";
 function DeleteCoursePage() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
+  const errorRef = useRef();
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [trigger, setTrigger] = useState(false);
@@ -16,15 +17,16 @@ function DeleteCoursePage() {
       setCourses(response.data);
     }
     catch(error) {
-    if(error.status == 403){
+      errorRef.current.style.color = "red";
+    if(error.status == 401){
         alert("Log In again. Your session has expired.")
         navigate("/signin", replace)
     }
-    if(error.response.data && error.response.data.detail) {
+    else if(error.response.data && error.response.data.detail) {
       setError(error.response.data.detail[0].msg);
     }
     else {
-      setError("An error occured while sending your request");
+      setError("An error occured while getting courses.");
     }
     }
   }
@@ -35,15 +37,17 @@ function DeleteCoursePage() {
     e.preventDefault();
     try {
       const response = await api.delete(`/courses/${code}/${option}`);
-      setError("");
+      setError("Course Deleted");
+      errorRef.current.style.color = "green";
       setTrigger(t => !t);
     } 
     catch (error) {
-      if(error.status == 403){
+      errorRef.current.style.color = "red";
+      if(error.status == 401){
         alert("Log In again. Your session has expired.");
         navigate("/signin", replace);
       }
-      if(error.response.data && error.response.data.detail) {
+      else if(error.response && error.response.data.detail) {
         setError(error.response.data.detail[0].msg);
       }
       else {
@@ -82,7 +86,7 @@ function DeleteCoursePage() {
       </div>
       <button type="submit">Delete Course</button>
     </form>
-    <div className="course-error courseDel-error">{error}</div>
+    <div className="course-error courseDel-error" ref={errorRef}>{error}</div>
     </div>
   );
 }

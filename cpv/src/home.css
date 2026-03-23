@@ -67,26 +67,36 @@
     color: black;
 }
 .resources{
-    margin-left: 10vw;
+    margin-left: 8vw;
+    margin-right: 4vw;
+    padding-right: 4vw;
     display: flex;
     gap: 40px;
     overflow-x: scroll;
     overflow-y: hidden;
-
+}
+.resources a{
+    color: black;
 }
 .resources .resource{
-    display: inline-block;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
     flex-shrink: 0;
+    justify-content: flex-start;
     width: 400px;
     border: 1px solid black;
     overflow: hidden;
     border-radius: 12px;
     padding: 40px 30px;
-    transition: background-color 0.5 ease;
+    transition: background-color 0.4s ease;
+}
+.resource .part2{
+    align-self: end;
 }
 .resources .resource:hover{
     background-color: white;
-    border: none;
+    border: 1px solid white;
 }
 .resources .date{
     background-color: #ad55ff;
@@ -150,6 +160,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    cursor: pointer;
 }
 .plus{
     position: relative;

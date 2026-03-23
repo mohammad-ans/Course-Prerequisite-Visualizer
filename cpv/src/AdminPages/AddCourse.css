@@ -106,6 +106,7 @@
     min-height: 100vh;
     min-width: 100vw;
     color: black;
+    position: relative;
 }
 .dashboard-headings{
     font-size: 2rem;
@@ -144,7 +145,7 @@
     position: absolute;
     z-index: 1;
     background-color: black;
-    height: 100vh;
+    height: 100%;
     width: 100vw;
     opacity: 50%;
     display: none;

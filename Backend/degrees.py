@@ -39,7 +39,7 @@ def add_degree(degree : schemas.Degree_Add, db : Session = Depends(get_db)):
     degree.dname = degree.dname.upper()
     already_exists = db.query(models.Degree).where(models.Degree.dname == degree.dname).one_or_none()
     if already_exists:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=[{"msg" : "A degree with same name already exists"}])
+        raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail=[{"msg" : "A degree with same name already exists"}])
     try:
         degreeAdd = models.Degree(
             dname = degree.dname,

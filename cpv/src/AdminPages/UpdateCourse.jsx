@@ -10,6 +10,7 @@ export default function UpdateCoursePage() {
   const selectElement = useRef();
   const [nameOption, setOption] = useState(false);
   const [error, setError] = useState("");
+  const errorRef = useRef();
   const [availablePreReqs, setAvailablePreReqs] = useState([]);
   const [preReqCourses, setpreReqs] = useState([]);
   const [cHours, setHours] = useState("");
@@ -25,7 +26,17 @@ export default function UpdateCoursePage() {
         setError("");
       }
       catch(error){
-        setError("An error occured while getting courses. Referesh Page.");
+        errorRef.current.style.color = "red";
+        if(error.status == 401){
+            alert("Log In again. Your session has expired.")
+            navigate("/signin", replace)
+        }
+        if(error.response.data && error.response.data.detail) {
+          setError(error.response.data.detail[0].msg);
+        }
+        else{
+          setError("An error occured while getting courses. Referesh Page.");
+        }
       }
     }
     getCourses();
@@ -48,7 +59,17 @@ export default function UpdateCoursePage() {
         setAvailablePreReqs(pre => arr)
       }
       catch(error) {
+        errorRef.current.style.color = "red";
+        if(error.status == 401){
+          alert("Log In again. Your session has expired.")
+          navigate("/signin", replace)
+      }
+      if(error.response.data && error.response.data.detail) {
+        setError(error.response.data.detail[0].msg);
+      }
+      else{
         setError("An error occured while trying to fetch pre-requisites. Referesh page")
+      }
       }
     }
     getPreReqs();
@@ -57,22 +78,26 @@ export default function UpdateCoursePage() {
   async function handleUpdate(e){
     e.preventDefault();
     if(!courses.find((element)=>element.code == code)){
+      errorRef.current.style.color = "red";
       setError("Course does not exists yet. Add course first");
       return;
     }
-    setError("")
     try {
       const response = await api.put(`/courses/${code}`, {"code" : code, "title" : title, "preReqs" : preReqCourses, cHours : cHours});
-      console.log('Course updated:', response.data);
+      errorRef.current.style.color = "green";
+      setError(`Course Updated: ${response.data}`);
       setCode("");
       setTitle("");
       setHours("");
       setAvailablePreReqs([]);
       setpreReqs([]);
       setGetdata(pre => !pre);
-    } catch (error) {
+    } 
+    catch (error) {
 
-      if(error.status == 403){
+      errorRef.current.style.color = "red";
+
+      if(error.status == 401){
           alert("Log In again. Your session has expired.")
           navigate("/signin", replace)
       }
@@ -181,7 +206,7 @@ export default function UpdateCoursePage() {
       </div>
       <button type="submit">Update Course</button>
     </form>
-    <div className="course-error courseUpdate-error">{error}</div>
+    <div className="course-error courseUpdate-error" ref={errorRef}>{error}</div>
       <div className="selected-prereqs">
         <h2>Pre-Requisites: </h2>
         <ul id="prereqs-list">

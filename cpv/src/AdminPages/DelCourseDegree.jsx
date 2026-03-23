@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../api";
 import "./AddCourse.css"
 export default function DelCourseDegree() {
     const [courseCode, setCode] = useState("");
     const [courses, setCourses] = useState([]);
     const [error, setError] = useState("");
+    const errorRef = useRef();
     const [degreeId, setId] = useState("");
     const [option, setOption] = useState(false);
     const [degrees, setDegrees] = useState([]);
@@ -15,7 +16,17 @@ export default function DelCourseDegree() {
                 setCourses(response.data);
             }
             catch(error) {
-                setError("An error occured while fetching the courses.")
+                errorRef.current.style.color = "red";
+                if(error.status == 401){
+                    alert("Log In again. Your session has expired.")
+                    navigate("/signin", replace)
+                }
+                else if(error.response.data && error.response.data.detail) {
+                    setError(error.response.data.detail[0].msg);
+                }
+                else {
+                    setError("An error occured while fetching the courses.")
+                }
             }
         }
         getCourses();
@@ -27,6 +38,18 @@ export default function DelCourseDegree() {
             setDegrees(response.data);
         }
         catch(error) {
+            
+            errorRef.current.style.color = "red";
+            if(error.status == 401){
+                alert("Log In again. Your session has expired.")
+                navigate("/signin", replace)
+            }
+            else if(error.response.data && error.response.data.detail) {
+                setError(error.response.data.detail[0].msg);
+            }
+            else {
+                setError("An error occured while getting degrees.");
+            }
             setDegrees([]);
         }
     }
@@ -39,14 +62,23 @@ export default function DelCourseDegree() {
                 "courseCode" : courseCode,
                 "option" : option
             });
-            setError("");
-        }
-        catch(error) {
-            setError("Course could not be deleted.")
-        }
-        finally{
+            errorRef.current.style.color = "green";
+            setError("Course deleted from semester");
             setCode("");
             setDegrees([]);
+        }
+        catch(error) {
+            errorRef.current.style.color = "red";
+            if(error.status == 401){
+                alert("Log In again. Your session has expired.")
+                navigate("/signin", replace)
+            }
+            else if(error.response.data && error.response.data.detail) {
+                setError(error.response.data.detail[0].msg);
+            }
+            else {
+                setError("Course could not be deleted.")
+            }
         }
     }
     function codeChange(e) {
@@ -82,7 +114,7 @@ export default function DelCourseDegree() {
             </div>
             <button type="submit">Delete Course</button>
         </form>
-        <div className="course-error">{error}</div>
+        <div className="course-error" ref={errorRef}>{error}</div>
     </div>
     )
 }

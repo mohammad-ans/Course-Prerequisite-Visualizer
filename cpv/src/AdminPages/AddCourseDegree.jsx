@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import api from "../api";
 
 export default function AddCourseDegree() {
@@ -8,6 +8,7 @@ export default function AddCourseDegree() {
     const [code, setCode] = useState("");
     const [degrees, setDegrees] = useState([]);
     const [error, setError] = useState("");
+    const errorRef = useRef();
     const [maxSem, setMaxSem] = useState("");
     const [courses, setCourses] = useState([]);
     const [fetchCourses, setFetchCourses] = useState(false);
@@ -17,8 +18,18 @@ export default function AddCourseDegree() {
                 const response = await api.get("/courses/full");
                 setCourses(response.data);
             }
-            catch(e) {
-
+            catch(error) {
+                errorRef.current.style.color = "red";
+                if(error.status == 401){
+                    alert("Log In again. Your session has expired.")
+                    navigate("/signin", replace)
+                }
+                else if(error.response.data && error.response.data.detail) {
+                setError(error.response.data.detail[0].msg);
+                }
+                else {
+                setError("An error occured while sending your request");
+                }
             }
         }
         getCourses();
@@ -30,6 +41,7 @@ export default function AddCourseDegree() {
             const tempDegree = degrees.filter(element => element.id == degree)[0];
             const totalHours = tempDegree.d_chours + tempCourse.cHours;
             if (totalHours > tempDegree.d_maxchours){
+                errorRef.current.style.color = "red";
                 setError("Adding this course exceeds the max credit hours for this degree");
                 return;
             }
@@ -39,7 +51,8 @@ export default function AddCourseDegree() {
                 "courseCode" : code,
                 "courseHours" : tempCourse.cHours
             })
-            setError("");
+            errorRef.current.style.color = "green";
+            setError("Course Successfully added");
             setCode("");
             setDegree("");
             setType("");
@@ -47,8 +60,12 @@ export default function AddCourseDegree() {
             setDegrees([]);
         }
         catch(error){
-            console.log(error)
-            if(error.response.data && error.response.data.detail[0]) {
+            errorRef.current.style.color = "red";
+            if(error.status == 401){
+                alert("Log In again. Your session has expired.")
+                navigate("/signin", replace)
+            }
+            else if(error.response && error.response.data.detail[0]) {
                 setError(error.response.data.detail[0].msg)
             }
             else{
@@ -71,8 +88,18 @@ export default function AddCourseDegree() {
             setDegrees(response.data);
             setError("");
         }
-        catch(e) {
-            setError("An error occured");
+        catch(error) {
+            errorRef.current.style.color = "red";
+            if(error.status == 401){
+                alert("Log In again. Your session has expired.")
+                navigate("/signin", replace)
+            }
+            if(error.response && error.response.data.detail) {
+                setError(error.response.data.detail[0].msg);
+            }
+            else{
+                setError("An error occured while fetching degrees.")
+            }
         }
     }
     function degreeChange(e) {
@@ -105,8 +132,8 @@ export default function AddCourseDegree() {
                 </select>
                 <input type="number" min={0} max={maxSem == "" ? 8 : maxSem } value={semNo} onChange={(e) => setSemNo(e.target.value)} placeholder="Enter Semester Number" required/>
                 <button type="submit">Add Course</button>
-                <div className="course-error">{error}</div>
             </form>
+                <div className="course-error" ref={errorRef}>{error}</div>
         </div>
     )
 }

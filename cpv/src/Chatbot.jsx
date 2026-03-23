@@ -6,7 +6,6 @@ export default function Chatbot() {
     const [degree, setDegree] = useState("");
     const [degrees, setDegrees] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState("");
     const textRef = useRef();
     const messageArea = useRef();
     useEffect(()=>{
@@ -37,9 +36,10 @@ export default function Chatbot() {
     }
     async function sendRequest(e) {
         e.preventDefault();
+        let response, err, animation, element;
         try{
             const request = textRef.current.value;
-            let element = document.createElement("p");
+            element = document.createElement("p");
             element.classList.add("request-msg");
             element.innerText = request;
             messageArea.current.append(element);
@@ -47,7 +47,7 @@ export default function Chatbot() {
             textRef.current.value = "";
             element = document.createElement("p");
             element.classList.add("dot");
-            const animation = gsap.to(element, {
+            animation = gsap.to(element, {
                 transform : "scale(1, 1)",
                 duration : 0.6,
                 repeat : -1,
@@ -56,18 +56,31 @@ export default function Chatbot() {
                 yoyoEase : "sine"
             })
             messageArea.current.append(element);
-            const response = await api.post("/ai", {
+            response = await api.post("/ai", {
                 "question" : request,
                 "degreeId" : degree
             })
-            animation.revert();
-            element.classList.remove("dot");
-            element.classList.add("response-msg");
-            element.innerText = response.data;
-            setLoading(pre => !pre);
         }
         catch(error) {
-            console.log(error)
+            if(error.response && error.response.data.detail) {
+                err = error.response.data.detail[0].msg;
+            }
+            else{
+                err = "Error processing request. Refresh and try again. If error presists feel free to contact us";
+            }
+        }
+        finally{
+            animation.revert();
+            element.classList.remove("dot");
+            if(err){
+                element.classList.add("response-msg", "error-msg");
+                element.innerText = err;
+            }
+            else{
+                element.classList.add("response-msg");
+                element.innerText = response.data;
+            }
+            setLoading(pre => !pre);
         }
     }
     function keySupport(e) {
@@ -82,7 +95,7 @@ export default function Chatbot() {
     return(
         <div className="chatbot">
             <div className="message-area" ref={messageArea}>
-                <p className="response-msg">Hi, I'm CPV AI. You can ask me any questions related to structure of degrees, courses and pre-requisites. Make sure you have selected the correct degree, before asking a question. In case of any problem, please referesh the page. If error persists feel free to inform us.
+                <p className="response-msg">Hi, I'm CPV AI. You can ask me any questions related to structure of degrees, courses and pre-requisites. Make sure you have selected the correct degree, before asking a question. In case of any problem, please referesh the page. If error persists feel free to inform us. I'm abit slow but I work😊😊.
                 </p>
             </div>
             <form className="typearea" onSubmit={sendRequest}>

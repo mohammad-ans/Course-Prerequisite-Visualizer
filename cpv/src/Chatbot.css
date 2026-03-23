@@ -72,6 +72,9 @@
     word-break: break-word;
     margin-bottom: 20px;
 }
+.error-msg{
+    color: red;
+}
 .request-msg{
     background-color: rgb(47, 47, 47);
     padding: 12px 10px;

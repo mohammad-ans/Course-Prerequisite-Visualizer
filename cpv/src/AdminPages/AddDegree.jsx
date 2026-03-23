@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import api from "../api";
 
 
@@ -9,11 +9,12 @@ export default function AddDegree() {
     const [maxHours, setMaxHours] = useState("");
     const [years, setYears] = useState("");
     const [error, setError] = useState("");
-    useEffect(()=>{
-        async function getDegrees(){
+    const errorRef = useRef();
+    // useEffect(()=>{
+    //     async function getDegrees(){
 
-        }
-    }, [])
+    //     }
+    // }, [])
     async function addDegree(e){
         e.preventDefault();
         if (dtype == "") {
@@ -28,19 +29,27 @@ export default function AddDegree() {
                 "max_chours" : maxHours,
                 "years" : years
             })
-            console.log(response.data)
-            setError("");
-        }
-        catch(e){
-            console.log(e);
-            setError("Course Not Added");
-        }
-        finally{
+            errorRef.current.style.color = "green"
+            setError("Degree Added");
             setHours("");
             setMaxHours("");
             setName("");
             setYears("");
             setType("");
+        }
+        catch(e){
+            errorRef.current.style.color = "red";
+            if(error.status == 401){
+                alert("Log In again. Your session has expired.")
+                navigate("/signin", replace)
+            }
+            else if(error.response.data && error.response.data.detail) {
+                setError(error.response.data.detail[0].msg);
+            }
+            else {
+                setError("Course Not Added");
+            }
+
         }
     }
     return(
@@ -58,7 +67,7 @@ export default function AddDegree() {
             <input type="number" placeholder="Enter total years in degree" value={years} onChange={(e) => setYears(e.target.value)} required/>
             <button type="submit" >Add Degree Program</button>
         </form>
-        <div className="course-error">{error}</div>
+        <div className="course-error" ref={errorRef}>{error}</div>
     </div>
     )
 }

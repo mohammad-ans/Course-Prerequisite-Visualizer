@@ -31,6 +31,8 @@ export default function Degrees() {
             setSemData(response.data.semData);
         }
         catch(error) {
+            setDegree("");
+            localStorage.setItem("degree", "");
             setError("An error occured while fetching degree data");
         }
     }

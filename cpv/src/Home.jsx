@@ -107,25 +107,42 @@ export default function Home() {
             <div className="white-container">
                 <div className="resources">
                     <div className="resource resource-1">
+                        
+                        <div className="part1">
                         <div className="date">DEC 27, 2025</div>
                         <div className="heading">Get Started</div>
-                        <div className="paragraph">Lorem ipsum dolor, Consectetur consequatur exercitationem quae a voluptatem, molestias veritatis nulla tempore nam cupiditate deleniti. Nulla ea aut asperiores exercitationem eligendi porro enim? Esse iusto corrupti commodi qui voluptatem amet laboriosam nesciunt voluptates assumenda?</div>
+                        <div className="paragraph">Want to know about the complete structure of degree in semesters? Head over to the degrees page and you will surely find your degree there.</div>
+                        </div>
+                        <div className="part2">
+
                         <div className="separator"></div>
-                        <div className="learn-more">Learn More <span className="arrow">&rarr;</span></div>
+                        <Link className="learn-more" to="/degrees">See Degrees<span className="arrow">&rarr;</span></Link>
+                        </div>
                     </div>
                     <div className="resource resource-1">
+                        <div className="part1">
+
                         <div className="date">DEC 27, 2025</div>
                         <div className="heading">Get Started</div>
-                        <div className="paragraph">Lorem ipsum dolor, Consectetur consequatur exercitationem quae a voluptatem, molestias veritatis nulla tempore nam cupiditate deleniti. Nulla ea aut asperiores exercitationem eligendi porro enim? Esse iusto corrupti commodi qui voluptatem amet laboriosam nesciunt voluptates assumenda?</div>
+                        <div className="paragraph">Just want answers to your questions about degree courses and their pre-requisites, or even information about the degree if in any type of confusion, chat with CPV AI, a help desk AI support for students.</div>
+                        </div>
+                        <div className="part2">
+
                         <div className="separator"></div>
-                        <div className="learn-more">Learn More <span className="arrow">&rarr;</span></div>
+                        <Link className="learn-more" to="/ask-ai">Ask CPV AI<span className="arrow">&rarr;</span></Link>
+                        </div>
                     </div>
                     <div className="resource resource-1">
+                        <div className="part1">
+
                         <div className="date">DEC 27, 2025</div>
                         <div className="heading">Get Started</div>
                         <div className="paragraph">Lorem ipsum dolor, Consectetur consequatur exercitationem quae a voluptatem, molestias veritatis nulla tempore nam cupiditate deleniti. Nulla ea aut asperiores exercitationem eligendi porro enim? Esse iusto corrupti commodi qui voluptatem amet laboriosam nesciunt voluptates assumenda?</div>
+                        </div>
+                        <div className="part2">
                         <div className="separator"></div>
-                        <div className="learn-more">Learn More <span className="arrow">&rarr;</span></div>
+                        <Link className="learn-more" to="/degrees">See Degrees<span className="arrow">&rarr;</span></Link>
+                        </div>
                     </div>
                 </div>
                 <div className="frequently-asked-questions">
