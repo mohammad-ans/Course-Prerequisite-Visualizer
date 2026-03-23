@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api";
+import useDashAuth from "../useDashAuth";
 
 export default function AddCourseDegree() {
     const [type, setType] = useState("");

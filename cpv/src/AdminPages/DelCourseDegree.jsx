@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api";
 import "./AddCourse.css"
+import useDashAuth from "../useDashAuth";
 export default function DelCourseDegree() {
     const [courseCode, setCode] = useState("");
     const [courses, setCourses] = useState([]);

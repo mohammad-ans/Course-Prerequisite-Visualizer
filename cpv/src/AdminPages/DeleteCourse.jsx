@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import api from '../api';
 import "./AddCourse.css"
+import useDashAuth from "../useDashAuth";
 import { replace, useNavigate } from "react-router-dom";
 
 function DeleteCoursePage() {

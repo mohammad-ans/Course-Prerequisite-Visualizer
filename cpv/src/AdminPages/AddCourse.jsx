@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import "./AddCourse.css"
 import api from '../api'
+import useDashAuth from "../useDashAuth";
 import { useNavigate, replace } from 'react-router-dom';
 
 function AddCoursePage() {
