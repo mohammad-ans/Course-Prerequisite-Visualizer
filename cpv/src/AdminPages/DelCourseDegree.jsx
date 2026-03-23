@@ -9,6 +9,15 @@ export default function DelCourseDegree() {
     const [degreeId, setId] = useState("");
     const [option, setOption] = useState(false);
     const [degrees, setDegrees] = useState([]);
+    
+    const {checking, isAdmin, setIsAdmin} = useDashAuth();
+
+    useEffect(()=>{
+        if(!checking)
+            if(!isAdmin)
+                navigate("/signin");
+    }, [checking])
+
     useEffect(()=>{
         async function getCourses(){
             try{
@@ -17,11 +26,7 @@ export default function DelCourseDegree() {
             }
             catch(error) {
                 errorRef.current.style.color = "red";
-                if(error.status == 401){
-                    alert("Log In again. Your session has expired.")
-                    navigate("/signin", replace)
-                }
-                else if(error.response.data && error.response.data.detail) {
+                if(error.response.data && error.response.data.detail) {
                     setError(error.response.data.detail[0].msg);
                 }
                 else {
@@ -40,11 +45,7 @@ export default function DelCourseDegree() {
         catch(error) {
             
             errorRef.current.style.color = "red";
-            if(error.status == 401){
-                alert("Log In again. Your session has expired.")
-                navigate("/signin", replace)
-            }
-            else if(error.response.data && error.response.data.detail) {
+            if(error.response.data && error.response.data.detail) {
                 setError(error.response.data.detail[0].msg);
             }
             else {
@@ -70,8 +71,9 @@ export default function DelCourseDegree() {
         catch(error) {
             errorRef.current.style.color = "red";
             if(error.status == 401){
-                alert("Log In again. Your session has expired.")
-                navigate("/signin", replace)
+                alert("Log In again. Your session has expired.");
+                navigate("/signin", replace);
+                setIsAdmin(false);
             }
             else if(error.response.data && error.response.data.detail) {
                 setError(error.response.data.detail[0].msg);

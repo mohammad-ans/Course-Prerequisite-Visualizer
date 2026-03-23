@@ -13,6 +13,14 @@ function AddCoursePage() {
   const errorRef = useRef();
   const [fetchCourses, setFetch] = useState(false);
   const navigate = useNavigate();
+  const {checking, isAdmin, setIsAdmin} = useDashAuth();
+
+  useEffect(()=>{
+      if(!checking)
+          if(!isAdmin)
+              navigate("/signin");
+  }, [checking])
+
   useEffect(()=>{
     async function func(){
       try{
@@ -22,9 +30,8 @@ function AddCoursePage() {
       }
       catch(error){
         errorRef.current.style.color = "red";
-        if(error.status == 401){
-            alert("Log In again. Your session has expired.")
-            navigate("/signin", replace)
+        if(error.response.data && error.response.data.detail) {
+        setError(error.response.data.detail[0].msg);
         }
         else
             setError("Error occured while fetching courses for pre-reqs list.");
@@ -73,8 +80,9 @@ function AddCoursePage() {
     catch (error) {
       errorRef.current.style.color = "red";
       if(error.status == 401){
-          alert("Log In again. Your session has expired.")
-          navigate("/signin", replace)
+          alert("Log In again. Your session has expired.");
+          navigate("/signin", replace);
+          setIsAdmin(false);
       }
       else if(error.response && error.response.data.detail) {
         setError(error.response.data.detail[0].msg);

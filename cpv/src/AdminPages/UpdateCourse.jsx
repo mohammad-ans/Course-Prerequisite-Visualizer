@@ -17,7 +17,14 @@ export default function UpdateCoursePage() {
   const [hoursOption, setHoursOpt] = useState(false);
   const [getData, setGetdata] = useState(false);
   const navigate = useNavigate();
-  // const [selectedPreReq, setSelectPr] = useState("")
+  const {checking, isAdmin, setIsAdmin} = useDashAuth();
+
+    useEffect(()=>{
+        if(!checking)
+            if(!isAdmin)
+                navigate("/signin");
+    }, [checking])
+
   useEffect(()=>{
     async function getCourses() {
       try{
@@ -27,10 +34,6 @@ export default function UpdateCoursePage() {
       }
       catch(error){
         errorRef.current.style.color = "red";
-        if(error.status == 401){
-            alert("Log In again. Your session has expired.")
-            navigate("/signin", replace)
-        }
         if(error.response.data && error.response.data.detail) {
           setError(error.response.data.detail[0].msg);
         }
@@ -60,10 +63,6 @@ export default function UpdateCoursePage() {
       }
       catch(error) {
         errorRef.current.style.color = "red";
-        if(error.status == 401){
-          alert("Log In again. Your session has expired.")
-          navigate("/signin", replace)
-      }
       if(error.response.data && error.response.data.detail) {
         setError(error.response.data.detail[0].msg);
       }
@@ -98,8 +97,9 @@ export default function UpdateCoursePage() {
       errorRef.current.style.color = "red";
 
       if(error.status == 401){
-          alert("Log In again. Your session has expired.")
-          navigate("/signin", replace)
+          alert("Log In again. Your session has expired.");
+          navigate("/signin", replace);
+          setIsAdmin(false);
       }
       if(error.response.data && error.response.data.detail) {
         setError(error.response.data.detail[0].msg);

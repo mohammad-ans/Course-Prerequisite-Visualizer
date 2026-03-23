@@ -12,6 +12,14 @@ export default function AddCourseDegree() {
     const [maxSem, setMaxSem] = useState("");
     const [courses, setCourses] = useState([]);
     const [fetchCourses, setFetchCourses] = useState(false);
+    const {checking, isAdmin, setIsAdmin} = useDashAuth();
+
+    useEffect(()=>{
+        if(!checking)
+            if(!isAdmin)
+                navigate("/signin");
+    }, [checking])
+
     useEffect(()=>{
         async function getCourses() {
             try{
@@ -20,11 +28,7 @@ export default function AddCourseDegree() {
             }
             catch(error) {
                 errorRef.current.style.color = "red";
-                if(error.status == 401){
-                    alert("Log In again. Your session has expired.")
-                    navigate("/signin", replace)
-                }
-                else if(error.response.data && error.response.data.detail) {
+                if(error.response.data && error.response.data.detail) {
                 setError(error.response.data.detail[0].msg);
                 }
                 else {
@@ -62,8 +66,9 @@ export default function AddCourseDegree() {
         catch(error){
             errorRef.current.style.color = "red";
             if(error.status == 401){
-                alert("Log In again. Your session has expired.")
-                navigate("/signin", replace)
+                alert("Log In again. Your session has expired.");
+                navigate("/signin", replace);
+                setIsAdmin(false);
             }
             else if(error.response && error.response.data.detail[0]) {
                 setError(error.response.data.detail[0].msg)
@@ -90,10 +95,6 @@ export default function AddCourseDegree() {
         }
         catch(error) {
             errorRef.current.style.color = "red";
-            if(error.status == 401){
-                alert("Log In again. Your session has expired.")
-                navigate("/signin", replace)
-            }
             if(error.response && error.response.data.detail) {
                 setError(error.response.data.detail[0].msg);
             }

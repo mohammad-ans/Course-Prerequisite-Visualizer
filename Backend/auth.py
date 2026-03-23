@@ -8,7 +8,7 @@ from models import Users, OTP_entry, Admins
 from schemas import OTP_verification, Email_signin
 from emailsend import send_otp
 import random
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from sqlalchemy import select
 import time
 
@@ -87,8 +87,7 @@ async def verify(verification_data : OTP_verification, response: Response, db : 
     type_ = "Permanent"
     if admin_check:
         type_="admin"
-    # expires = 
-    payload = {"username" : user.username, "type" : type_, "exp" : int(datetime.now(timezone.utc).timestamp()) + 21600}
+    payload = {"username" : user.username, "type" : type_, "exp" : int(time.time()) + 21600}
     token = await create_session_token(payload)
     response.set_cookie(
         key="session_token",
@@ -96,7 +95,7 @@ async def verify(verification_data : OTP_verification, response: Response, db : 
         httponly = True,
         secure = True,
         samesite = "none",
-        expires=datetime.now(timezone.utc) + timedelta(seconds=21600),
+        max_age=21600,
         path="/",
         domain=".yappyyap.xyz"
         )
