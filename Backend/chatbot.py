@@ -4,8 +4,10 @@ from database import SessionLocal
 import models, schemas
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
+import os
 
 router = APIRouter()
+API_KEY = os.getenv("chat_api")
 def get_db():
     db = SessionLocal()
     try:
@@ -16,7 +18,7 @@ def get_db():
     
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key="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"
+    api_key= API_KEY
 )
 
 @router.post("/ai")

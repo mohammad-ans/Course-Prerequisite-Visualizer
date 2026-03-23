@@ -137,11 +137,11 @@ export default function Home() {
 
                         <div className="date">DEC 27, 2025</div>
                         <div className="heading">Get Started</div>
-                        <div className="paragraph">Lorem ipsum dolor, Consectetur consequatur exercitationem quae a voluptatem, molestias veritatis nulla tempore nam cupiditate deleniti. Nulla ea aut asperiores exercitationem eligendi porro enim? Esse iusto corrupti commodi qui voluptatem amet laboriosam nesciunt voluptates assumenda?</div>
+                        <div className="paragraph">You can also visualize courses presented in graph form, where related courses form a complete line showing the relationship between courses.</div>
                         </div>
                         <div className="part2">
                         <div className="separator"></div>
-                        <Link className="learn-more" to="/degrees">See Degrees<span className="arrow">&rarr;</span></Link>
+                        <Link className="learn-more" to="/graph">See Graph<span className="arrow">&rarr;</span></Link>
                         </div>
                     </div>
                 </div>
