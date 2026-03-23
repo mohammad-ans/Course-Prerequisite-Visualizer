@@ -117,7 +117,6 @@ function SearchCoursePage() {
     }
   }
   function enterSubmit(e) {
-    console.log(e.keyCode, e.code)
     if(e.keyCode == 13)
       handleSearch()
     if(e.keyCode == 27)
