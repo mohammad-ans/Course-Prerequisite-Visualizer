@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import api from "../api";
 import useDashAuth from "../useDashAuth";
+import { useNavigate } from "react-router-dom";
 
 export default function AddCourseDegree() {
     const [type, setType] = useState("");
@@ -14,7 +15,7 @@ export default function AddCourseDegree() {
     const [courses, setCourses] = useState([]);
     const [fetchCourses, setFetchCourses] = useState(false);
     const {checking, isAdmin, setIsAdmin} = useDashAuth();
-
+    const navigate = useNavigate();
     useEffect(()=>{
         if(!checking)
             if(!isAdmin)

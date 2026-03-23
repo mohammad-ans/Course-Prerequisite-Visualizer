@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import api from "../api";
 import "./AddCourse.css"
 import useDashAuth from "../useDashAuth";
+import { useNavigate } from "react-router-dom";
 export default function DelCourseDegree() {
     const [courseCode, setCode] = useState("");
     const [courses, setCourses] = useState([]);
@@ -10,7 +11,7 @@ export default function DelCourseDegree() {
     const [degreeId, setId] = useState("");
     const [option, setOption] = useState(false);
     const [degrees, setDegrees] = useState([]);
-    
+    const navigate = useNavigate();
     const {checking, isAdmin, setIsAdmin} = useDashAuth();
 
     useEffect(()=>{
