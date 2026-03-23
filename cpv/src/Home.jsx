@@ -34,7 +34,6 @@ export default function Home() {
         if(temp2 != answer){
             setAnswer(temp2);
             let el = document.querySelector(`.${temp}`).children[1].children[1];
-            console.log(el);
             gsap.to(el, {
                 rotate : "0deg",
                 overwrite : "auto"
