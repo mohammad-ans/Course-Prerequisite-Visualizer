@@ -4,6 +4,7 @@ import models, schemas
 from sqlalchemy.orm import Session
 from typing import List
 import sqlalchemy
+from auth import verify_session_token
 router = APIRouter()
 
 
@@ -18,7 +19,7 @@ def get_db():
 @router.post("/courses", 
              summary="Add a new course",
              description="Adds a new course, assigns it's pre-requisite courses and ensures course added is not duplicate.")
-def add_course(course: schemas.CourseCreate, db: Session = Depends(get_db)):
+def add_course(course: schemas.CourseCreate, db: Session = Depends(get_db), payload = Depends(verify_session_token)):
     already_exists = db.query(models.Course).where(models.Course.code == course.code).one_or_none()
     if already_exists:
         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail=[{"msg" : "Course Already Exists"}])
@@ -131,7 +132,7 @@ def get_course(searchQuery: str, searchby : str, db: Session = Depends(get_db)):
 @router.put("/courses/{code}",
             summary="Update course details",
             description="Given the code of an existing course, updates its title, credit hours and pre-requisite courses, whatever was specified in the payload.")
-def update_course(code: str, course: schemas.CourseUpdate, db: Session = Depends(get_db)):
+def update_course(code: str, course: schemas.CourseUpdate, db: Session = Depends(get_db), payload = Depends(verify_session_token)):
     try:
         db_data = db.query(models.Course).where(models.Course.code == code).one_or_none()
     except Exception as e:
@@ -158,7 +159,7 @@ def update_course(code: str, course: schemas.CourseUpdate, db: Session = Depends
 @router.delete("/courses/{code}/{option}",
                summary="Delete a course",
                description="Given an existing course code, deletes the course and remove it's pre-requiste relationships with other courses.")
-def delete_course(code: str, option : bool, db: Session = Depends(get_db)):
+def delete_course(code: str, option : bool, db: Session = Depends(get_db), payload = Depends(verify_session_token)):
     course = db.query(models.Course).where(models.Course.code == code).one_or_none()
     if not course:
         raise HTTPException(status_code=404, detail=[{"msg": "Course not found"}])  

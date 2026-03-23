@@ -87,7 +87,7 @@ async def verify(verification_data : OTP_verification, response: Response, db : 
     type_ = "Permanent"
     if admin_check:
         type_="admin"
-    payload = {"username" : user.username, "type" : type_, "exp" : int(time.time()) + 1800}
+    payload = {"username" : user.username, "type" : type_, "exp" : int(time.time()) + 21600}
     token = await create_session_token(payload)
     response.set_cookie(
         key="session_token",
@@ -95,7 +95,7 @@ async def verify(verification_data : OTP_verification, response: Response, db : 
         httponly = True,
         secure = True,
         samesite = "none",
-        max_age=1800,
+        max_age=21600,
         path="/",
         domain=".yappyyap.xyz"
         )

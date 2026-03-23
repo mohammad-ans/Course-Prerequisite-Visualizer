@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 import models
 from schemas import Add_user
 from database import SessionLocal
+from auth import verify_session_token
 router = APIRouter()
 
 
@@ -14,12 +15,12 @@ def get_db():
         db.close()
 
 @router.get("/users")
-def get_users(db : Session = Depends(get_db)):
+def get_users(db : Session = Depends(get_db), payload = Depends(verify_session_token)):
     users = db.query(models.Users).all()
     return users
 
 @router.delete("/users/{email}")
-def del_users(email : str, db : Session = Depends(get_db)):
+def del_users(email : str, db : Session = Depends(get_db), payload = Depends(verify_session_token)):
     try:
         user = db.query(models.Users).where(models.Users.email == email).one_or_none()
         if not user:
@@ -32,7 +33,7 @@ def del_users(email : str, db : Session = Depends(get_db)):
     return {"msg" : f"Successfully deleted user with {email}"}
 
 @router.post("/users")
-def add_user(user : Add_user,db : Session = Depends(get_db)):
+def add_user(user : Add_user,db : Session = Depends(get_db), payload = Depends(verify_session_token)):
     try:
         user_data = models.Users(
             email = user.email,

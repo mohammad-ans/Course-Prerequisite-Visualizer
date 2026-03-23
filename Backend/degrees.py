@@ -3,6 +3,7 @@ from database import SessionLocal
 from sqlalchemy import select, delete, update, func, and_
 from sqlalchemy.orm import Session
 import models, schemas
+from auth import verify_session_token
 router = APIRouter()
 
 def get_db():
@@ -35,7 +36,7 @@ def get_tdegrees(dtype : str, db : Session = Depends(get_db)):
 @router.post("/degree",
              summary="Add a degree",
              description="Add a new degree ensuring no duplicates on the basis of name.")
-def add_degree(degree : schemas.Degree_Add, db : Session = Depends(get_db)):
+def add_degree(degree : schemas.Degree_Add, db : Session = Depends(get_db), payload = Depends(verify_session_token)):
     degree.dname = degree.dname.upper()
     already_exists = db.query(models.Degree).where(models.Degree.dname == degree.dname).one_or_none()
     if already_exists:
@@ -82,7 +83,7 @@ def course_in_degrees(course : str, db : Session = Depends(get_db)):
 @router.post("/delsemester/courses",
              summary="Delete course from degree",
              description="Deletes course from degree as specified or deletes course from all the degrees depending on option(parameter)")
-def del_courseSem(data : schemas.SemCourse_Del, db : Session = Depends(get_db)):
+def del_courseSem(data : schemas.SemCourse_Del, db : Session = Depends(get_db), payload = Depends(verify_session_token)):
     try:
         if data.option:
             crs = db.query(models.Course).where(models.Course.code == data.courseCode).one_or_none()
@@ -114,7 +115,7 @@ def del_courseSem(data : schemas.SemCourse_Del, db : Session = Depends(get_db)):
 @router.post("/semester/courses",
              summary="Add course to a degree",
              description="Add course to degree in a specific valid semester ensuring addition doesn't exceeds max credit hours per semester or degree.")
-def associate_courseSem(data : schemas.Course_Associate, db : Session = Depends(get_db)):
+def associate_courseSem(data : schemas.Course_Associate, db : Session = Depends(get_db), payload = Depends(verify_session_token)):
     try:
         
         semData = db.query(models.Semesters).where(models.Semesters.semNo == data.semNo, models.Semesters.dId == data.degreeId).one_or_none()
