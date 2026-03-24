@@ -5,9 +5,13 @@ import models, schemas
 from sqlalchemy.orm import Session
 from sqlalchemy import select, func
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
 API_KEY = os.getenv("chat_api")
+
 def get_db():
     db = SessionLocal()
     try:
