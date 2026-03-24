@@ -11,6 +11,9 @@ import random
 from datetime import datetime, timezone
 from sqlalchemy import select
 import time
+from dotenv import load_dotenv
+
+load_dotenv()
 
 router = APIRouter()
 
