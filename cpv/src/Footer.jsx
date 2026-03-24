@@ -18,7 +18,7 @@ export default function Footer() {
                 <Link to="/contactus">Get in Touch</Link>
             </div>
             </div>
-            <div className="copyright">&copy; 2025 Your Company Name. All Rights Reserved.</div>
+            <div className="copyright">&copy; 2026 CPV. All Rights Reserved.</div>
         </footer>
     )
 }
