@@ -11,7 +11,6 @@ load_dotenv()
 
 router = APIRouter()
 API_KEY = os.getenv("chat_api")
-
 def get_db():
     db = SessionLocal()
     try:
@@ -22,9 +21,8 @@ def get_db():
     
 client = OpenAI(
     base_url="https://openrouter.ai/api/v1",
-    api_key= API_KEY
+    api_key= API_KEY,
 )
-
 @router.post("/ai")
 def answer_request(query : schemas.AI_question, db : Session = Depends(get_db)):
     result = {}

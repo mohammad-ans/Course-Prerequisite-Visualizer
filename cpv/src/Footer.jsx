@@ -10,9 +10,9 @@ export default function Footer() {
             <div className="footer-columns">
             <div className="social-media">
                 <p>Connect</p>
-                <a href="www.facebook.com">Facebook</a>
-                <a href="www.instagram.com">Instagram</a>
-                <a href="www.github.com">Github</a>
+                <a href="https://facebook.com" target="blank">Facebook</a>
+                <a href="https://instagram.com" target="blank">Instagram</a>
+                <a href="https://github.com/mohammad-ans/Course-Prerequisite-Visualizer" target="blank">Github</a>
             </div>
             <div className="get-in-touch">
                 <Link to="/contactus">Get in Touch</Link>

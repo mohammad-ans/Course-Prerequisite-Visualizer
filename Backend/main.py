@@ -10,7 +10,7 @@ load_dotenv()
 
 origins = [
     "https://yappyyap.xyz",
-    "https://www.yappyyap.xyz"
+    "https://www.yappyyap.xyz",
 ]
 
 app = FastAPI()
